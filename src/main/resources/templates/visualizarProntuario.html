@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Prontuário do Paciente</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<th:block th:replace="~{menuNavegacao.html}"></th:block>
+
+<div class="container my-4">
+    <h2 class="text-center mb-4">Prontuário de <span th:text="${paciente.nome}"></span></h2>
+    
+    <div class="mb-4">
+        <h4>📅 Histórico de Consultas de <span th:text="${paciente.nome}"></span></h4>
+		<div class="table-responsive">
+					<table class="table table-striped table-bordered">
+					    <thead class="table-dark">
+					        <tr>
+					            <th class="text-center">Data</th>
+					            <th class="text-center">Hora</th>
+					            <th class="text-center">Profissional</th>
+					            <th class="text-center">Status</th>
+					        </tr>
+					    </thead>
+					    <tbody>
+					        <tr th:each="consulta : ${consultas}">
+					            <td class="text-center" th:text="${#dates.format(consulta.dataHora, 'dd/MM/yyyy')}"></td>
+					            <td class="text-center" th:text="${#dates.format(consulta.dataHora, 'HH:mm')}"></td>
+								<td class="text-center" th:text="${consulta['profissionalNome'] != null} ? ${consulta['profissionalNome']} : 'Não informado'"></td>
+					            <td class="text-center" th:text="${consulta.status} ?: 'Não informado'"></td>
+					        </tr>
+					        <tr th:if="${#lists.isEmpty(consultas)}">
+					            <td colspan="4" class="text-center text-muted">Nenhuma consulta registrada</td>
+					        </tr>
+					    </tbody>
+					</table>
+        </div>
+    </div>
+    
+    <div class="text-center mt-4">
+        <a class="btn btn-outline-dark me-2" th:href="@{/pacientes}">
+            📋 Lista de Pacientes
+        </a>
+        <a class="btn btn-danger" th:href="@{/}">
+            🏠 Página Inicial
+        </a>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

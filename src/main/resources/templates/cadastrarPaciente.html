@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastrar/Editar Paciente</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<th:block th:replace="~{menuNavegacao.html}"></th:block>
+<div class="container my-4">
+    <h2 class="text-center" th:text="${paciente.id == null} ? 'Cadastrar Paciente' : 'Editar Paciente'"></h2>
+    <script th:if="${errorMessage}">
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro!',
+            text: "[[${errorMessage}]]",
+            timer: 2000,
+            showConfirmButton: false
+        });
+    </script>
+    <form th:action="@{/pacientes/salvar}" th:object="${paciente}" method="post" class="mx-auto" style="max-width: 500px;">
+        <input type="hidden" th:field="*{id}" />
+        <div class="mb-3">
+            <label class="form-label">Nome:</label>
+            <input type="text" class="form-control" th:field="*{nome}" required/>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">CPF:</label>
+            <input type="text" class="form-control" th:field="*{cpf}" id="cpf" required/>
+            <div th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}" class="text-danger"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Data de Nascimento:</label>
+            <input type="date" class="form-control" name="dataNascimento" 
+                   th:value="${paciente.dataNascimento != null} ? ${#temporals.format(paciente.dataNascimento, 'yyyy-MM-dd')} : ''" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Telefone:</label>
+            <input type="text" class="form-control" th:field="*{telefone}" id="telefone" required/>
+            <div th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}" class="text-danger"></div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-4">💾 Salvar</button>
+        </div>
+    </form>
+    <div class="text-center mt-4">
+        <a class="btn btn-outline-dark me-2" th:href="@{/pacientes}">
+            📋 Lista de Pacientes
+        </a>
+        <a class="btn btn-danger" th:href="@{/}">
+            🏠 Página Inicial
+        </a>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script>
+  $(document).ready(function(){
+    $('#cpf').mask('000.000.000-00', {reverse: false});
+    $('#telefone').mask('(00) 00000-0000');
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

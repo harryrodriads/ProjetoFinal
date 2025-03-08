@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Agendar/Editar Consulta</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<th:block th:replace="~{menuNavegacao.html}"></th:block>
+<div class="container my-4">
+    <h2 class="text-center mb-4" th:text="${consulta.id == null} ? 'Agendar Consulta' : 'Editar Consulta'"></h2>
+
+    <form th:action="@{/consultas/salvar}" th:object="${consulta}" method="post" class="mx-auto" style="max-width: 500px;">
+        <input type="hidden" th:field="*{id}" />
+        <div class="mb-3">
+            <label class="form-label">Paciente:</label>
+            <select class="form-select" name="pacienteId" required>
+                <option value="">Selecione um paciente</option>
+                <option th:each="paciente : ${pacientes}" 
+                        th:value="${paciente.id}"
+                        th:text="${paciente.nome + ' (ID: ' + paciente.id + ')'}"
+                        th:selected="${consulta.id != null && consulta.paciente != null && consulta.paciente.id == paciente.id}">
+                </option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Profissional:</label>
+			<select class="form-select" name="profissional" id="profissionalSelect" required>
+			    <option value="">Selecione um profissional</option>
+			    <option th:each="profissional : ${profissionais}"
+			            th:value="${profissional.id}"
+			            th:text="${profissional.nome}"
+			            th:attr="data-especialidade=${profissional.especialidade != null ? profissional.especialidade.nome : 'Sem Especialidade'}">
+			    </option>
+			</select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Especialidade:</label>
+            <input type="text" id="especialidadeField" class="form-control" readonly />
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Data:</label>
+                <input type="date" class="form-control" name="dataStr"
+                       th:value="${consulta.id != null} ? ${#temporals.format(consulta.dataHora, 'yyyy-MM-dd')} : ''" required />
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Hora:</label>
+                <input type="time" class="form-control" name="horaStr"
+                       th:value="${consulta.id != null} ? ${#temporals.format(consulta.dataHora, 'HH:mm')} : ''" required />
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Status:</label>
+            <select class="form-select" name="status" required>
+                <option value="">Selecione o status</option>
+                <option value="Agendada" th:selected="${consulta.status == 'Agendada'}">Agendada</option>
+                <option value="Realizada" th:selected="${consulta.status == 'Realizada'}">Realizada</option>
+                <option value="Cancelada" th:selected="${consulta.status == 'Cancelada'}">Cancelada</option>
+            </select>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-4">💾 Salvar</button>
+        </div>
+    </form>
+    <div class="text-center mt-4">
+        <a class="btn btn-outline-dark me-2" th:href="@{/consultas}">
+            📋 Lista de Consultas
+        </a>
+        <a class="btn btn-danger" th:href="@{/}">
+            🏠 Página Inicial
+        </a>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+	    const profissionalSelect = document.getElementById("profissionalSelect");
+	    const especialidadeField = document.getElementById("especialidadeField");
+
+	    profissionalSelect.addEventListener("change", function () {
+	        const selectedOption = profissionalSelect.options[profissionalSelect.selectedIndex];
+	        const especialidade = selectedOption.getAttribute("data-especialidade") || "Sem Especialidade";
+	        especialidadeField.value = especialidade;
+	    });
+
+	    if (profissionalSelect.value) {
+	        const selectedOption = profissionalSelect.options[profissionalSelect.selectedIndex];
+	        especialidadeField.value = selectedOption.getAttribute("data-especialidade") || "Sem Especialidade";
+	    }
+	});
+</script>
+</body>
+</html>

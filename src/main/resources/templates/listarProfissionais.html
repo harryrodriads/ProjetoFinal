@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profissionais</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<th:block th:replace="~{menuNavegacao.html}"></th:block>
+<div class="container my-4">
+    <h2 class="text-center mb-4">Profissionais</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th class="text-center">ID</th>
+                    <th class="text-center">Nome</th>
+                    <th class="text-center">Registro Profissional</th>
+                    <th class="text-center">Cargo</th>
+                    <th class="text-center">Especialidades</th>
+                    <th class="text-center">Ações</th>
+                </tr>
+            </thead>
+			<tbody>
+			    <tr th:each="profissional : ${profissionais}">
+			        <td th:text="${profissional.id}"></td>
+			        <td th:text="${profissional.nome}"></td>
+			        <td th:text="${profissional.registroProf}"></td>
+			        <td th:text="${profissional.cargo}"></td>
+			        <td th:text="${profissional.especialidade.nome}"></td>
+			        <td class="text-center">
+			            <a th:href="@{/profissionais/editar/{id}(id=${profissional.id})}" class="btn btn-sm btn-primary">✏️ Editar</a>
+						<a href="#" class="btn btn-sm btn-danger"
+						   th:attr="data-id=${profissional.id}" onclick="confirmarExclusao(this)">🗑️ Excluir</a>
+			        </td>
+			    </tr>
+			</tbody>
+        </table>
+    </div>
+    <div class="text-center mt-4">
+		<a th:href="@{/profissionais/cadastrar}" class="btn btn-success">➕ Novo Profissional</a>
+        <a th:href="@{/}" class="btn btn-danger">🏠 Página Inicial</a>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmarExclusao(element) {
+        let profissionalId = element.getAttribute("data-id");
+        let url = `/profissionais/excluir/${profissionalId}`;
+        Swal.fire({
+            title: "Tem certeza?",
+            text: "Deseja excluir mesmo este profissional?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sim, excluir!",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+</script>
+</body>
+</html>
