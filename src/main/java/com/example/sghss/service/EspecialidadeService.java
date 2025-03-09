@@ -1,9 +1,6 @@
 package com.example.sghss.service;
 import com.example.sghss.model.Especialidade;
 import com.example.sghss.repository.EspecialidadeRepository;
-
-import jakarta.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +12,9 @@ public class EspecialidadeService {
 
 	@Autowired
     private EspecialidadeRepository especialidadeRepository;
+	
+	@Autowired
+    private AuditoriaService auditoriaService;
 
     public List<Especialidade> listarTodas() {
         return especialidadeRepository.findAll();
@@ -24,12 +24,14 @@ public class EspecialidadeService {
         return especialidadeRepository.findById(id);
     }
 
-    public void salvar(Especialidade especialidade) {
-        especialidadeRepository.save(especialidade);
+    public Especialidade salvar(Especialidade especialidade, String usuario) {
+        Especialidade novaEspecialidade = especialidadeRepository.save(especialidade);
+        auditoriaService.registrarAcao(especialidade.getId() != null ? "Edição" : "Cadastro", "Especialidade", usuario);
+        return novaEspecialidade;
     }
 
-    @Transactional
-    public void excluir(Long id) {
-            especialidadeRepository.deleteById(id);
-        }
+    public void deletar(Long id, String usuario) {
+        especialidadeRepository.deleteById(id);
+        auditoriaService.registrarAcao("Exclusão", "Especialidade", usuario);
+    }
 }

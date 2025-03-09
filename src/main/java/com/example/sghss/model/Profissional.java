@@ -1,12 +1,10 @@
 package com.example.sghss.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "profissionais")
-public class Profissional {
+public class Profissional extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

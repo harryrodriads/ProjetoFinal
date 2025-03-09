@@ -3,6 +3,8 @@ import com.example.sghss.model.Especialidade;
 import com.example.sghss.service.EspecialidadeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,8 +43,10 @@ public class EspecialidadeController {
             return "mensagemErro";
         }
 
-        especialidadeService.salvar(especialidade);
-        
+        String usuario = obterUsuarioLogado();
+
+        especialidadeService.salvar(especialidade, usuario);
+
         model.addAttribute("successMessage", "Especialidade salva com sucesso!");
         model.addAttribute("redirectUrl", "/especialidades");
         return "mensagemSucesso";
@@ -60,7 +64,16 @@ public class EspecialidadeController {
 
     @GetMapping("/excluir/{id}")
     public String excluirEspecialidade(@PathVariable Long id) {
-        especialidadeService.excluir(id);
+        String usuario = obterUsuarioLogado();
+        especialidadeService.deletar(id, usuario);
         return "redirect:/especialidades";
+    }
+
+    private String obterUsuarioLogado() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        }
+        return "Desconhecido";
     }
 }

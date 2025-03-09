@@ -8,15 +8,18 @@
 </head>
 <body>
 <th:block th:replace="~{menuNavegacao.html}"></th:block>
+
 <div class="container my-5">
-	<div class="d-flex align-items-center mb-4">
-	    <img src="/capa.jpg" alt="SGHSS Gestão Hospitalar" style="width: 550px; height: auto;" class="rounded shadow me-3">
-	    <div>
-	        <h1 class="fw-bold mb-2">🏥 Bem-vindo ao SGHSS</h1>
-	        <p class="lead mb-0">Sistema de Gestão Hospitalar e de Serviços de Saúde</p>
-	    </div>
-	</div>
+    <div class="d-flex align-items-center mb-4">
+        <img src="/capa.jpg" alt="SGHSS Gestão Hospitalar" style="width: 550px; height: auto;" class="rounded shadow me-3">
+        <div>
+            <h1 class="fw-bold mb-2">🏥 Bem-vindo ao SGHSS</h1>
+            <p class="lead mb-0">Sistema de Gestão Hospitalar e de Serviços de Saúde</p>
+        </div>
+    </div>
+
     <div class="row row-cols-1 row-cols-md-2 g-4">
+        <!-- Pacientes -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
@@ -27,6 +30,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Consultas -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
@@ -37,6 +42,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Profissionais -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
@@ -47,6 +54,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Especialidades -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
@@ -57,26 +66,56 @@
                 </div>
             </div>
         </div>
+
+        <!-- Internações -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
-                    <h4 class="card-title">⚙️ Administração</h4>
-                    <p class="card-text">Gerencie usuários e configurações do sistema.</p>
-                    <a th:href="@{/admin}" class="btn btn-outline-warning">🔧 Configurações</a>
+                    <h4 class="card-title">🏨 Internações</h4>
+                    <p class="card-text">Controle de internações hospitalares.</p>
+                    <a th:href="@{/internacoes}" class="btn btn-outline-primary">📋 Listar</a>
+                    <a th:href="@{/internacoes/cadastrar}" class="btn btn-outline-success">➕ Registrar</a>
                 </div>
             </div>
         </div>
+
+        <!-- Leitos -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
-                    <h4 class="card-title">🔑 Login</h4>
-                    <p class="card-text">Acesse sua conta.</p>
-                    <a th:href="@{/login}" class="btn btn-outline-dark">🔓 Entrar</a>
+                    <h4 class="card-title">🛏️ Leitos</h4>
+                    <p class="card-text">Gerenciamento de leitos hospitalares.</p>
+                    <a th:href="@{/leitos}" class="btn btn-outline-primary">📋 Listar</a>
+                    <a th:href="@{/leitos/cadastrar}" class="btn btn-outline-success">➕ Adicionar</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Videochamadas -->
+        <div class="col">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h4 class="card-title">🎥 Videochamadas</h4>
+                    <p class="card-text">Gerencie consultas por videochamada.</p>
+                    <a th:href="@{/videochamadas}" class="btn btn-outline-primary">📋 Listar</a>
+                    <a th:href="@{/videochamadas/cadastrar}" class="btn btn-outline-success">➕ Agendar</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Auditoria -->
+        <div class="col">
+            <div class="card shadow h-100">
+                <div class="card-body text-center">
+                    <h4 class="card-title">📜 Auditoria</h4>
+                    <p class="card-text">Histórico de ações no sistema.</p>
+                    <a th:href="@{/auditoria}" class="btn btn-outline-primary">📋 Consultar</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

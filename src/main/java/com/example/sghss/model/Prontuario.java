@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "prontuarios")
-public class Prontuario {
+public class Prontuario extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

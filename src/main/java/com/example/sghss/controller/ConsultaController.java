@@ -6,6 +6,8 @@ import com.example.sghss.service.ConsultaService;
 import com.example.sghss.service.PacienteService;
 import com.example.sghss.service.ProfissionalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -57,7 +59,7 @@ public class ConsultaController {
     ) {
         LocalDate data = LocalDate.parse(dataStr);
         LocalTime hora = LocalTime.parse(horaStr);
-        
+
         if (consulta.getId() != null) {
             Consulta consultaExistente = consultaService.buscarPorId(consulta.getId()).orElse(null);
             if (consultaExistente != null) {
@@ -83,9 +85,11 @@ public class ConsultaController {
             return "mensagemErro";
         }
 
+        String usuario = obterUsuarioLogado();
+
         boolean isEdit = (consulta.getId() != null);
-        consultaService.salvar(consulta);
-        
+        consultaService.salvar(consulta, usuario);
+
         model.addAttribute("successMessage", isEdit ? "Consulta atualizada com sucesso!" : "Consulta agendada com sucesso!");
         model.addAttribute("redirectUrl", "/consultas");
         return "mensagemSucesso";
@@ -106,7 +110,8 @@ public class ConsultaController {
 
     @GetMapping("/excluir/{id}")
     public String excluirConsulta(@PathVariable Long id) {
-        consultaService.excluir(id);
+    	String usuario = obterUsuarioLogado();
+    	consultaService.deletar(id, usuario);
         return "redirect:/consultas";
     }
     
@@ -119,6 +124,14 @@ public class ConsultaController {
 
         model.addAttribute("paciente", paciente);
         return "visualizarProntuario";
+    }
+    
+    private String obterUsuarioLogado() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        }
+        return "Desconhecido";
     }
 
 }

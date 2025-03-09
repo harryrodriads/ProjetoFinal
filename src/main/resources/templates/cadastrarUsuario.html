@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastrar Usuário</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<th:block th:replace="~{menuNavegacao.html}"></th:block>
+
+<div class="container my-4">
+    <h2 class="text-center mb-4">👤 Cadastrar Usuário</h2>
+
+    <form th:action="@{/usuarios/salvar}" th:object="${usuario}" method="post" class="mx-auto" style="max-width: 500px;">
+        <div class="mb-3">
+            <label class="form-label">Nome de Usuário:</label>
+            <input type="text" class="form-control" th:field="*{username}" required />
+            <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Senha:</label>
+            <input type="password" class="form-control" th:field="*{password}" required />
+            <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
+        </div>
+
+		<div class="mb-3">
+		    <label class="form-label">Perfil:</label>
+		    <select class="form-select" th:field="*{perfil}" required>
+			    <option value="">Selecione o perfil</option>
+			    <option th:each="p : ${perfis}" th:if="${p.name() != 'ADMIN'}" th:value="${p}" th:text="${p}"></option>
+			</select>
+		    <div th:if="${#fields.hasErrors('perfil')}" th:errors="*{perfil}" class="text-danger"></div>
+		</div>
+
+
+		<div class="mb-3" th:if="${usuario.perfil != null and usuario.perfil.name() == 'PACIENTE'}">
+		    <label class="form-label">Vincular a um Paciente:</label>
+		    <select class="form-select" th:field="*{paciente}">
+		        <option value="">Nenhum</option>
+		        <option th:each="pac : ${pacientes}" th:value="${pac.id}" th:text="${pac.nome}"></option>
+		    </select>
+		</div>
+
+		<div class="mb-3" th:if="${usuario.perfil != null and usuario.perfil.name() == 'MEDICO'}">
+		    <label class="form-label">Vincular a um Profissional:</label>
+		    <select class="form-select" th:field="*{profissional}">
+		        <option value="">Nenhum</option>
+		        <option th:each="prof : ${profissionais}" th:value="${prof.id}" th:text="${prof.nome}"></option>
+		    </select>
+		</div>
+
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-4">💾 Cadastrar</button>
+        </div>
+    </form>
+
+    <div class="text-center mt-4">
+        <a class="btn btn-outline-dark me-2" th:href="@{/usuarios}">
+            📋 Lista de Usuários
+        </a>
+        <a class="btn btn-danger" th:href="@{/}">
+            🏠 Página Inicial
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

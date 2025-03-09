@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "pacientes")
-public class Paciente {
+public class Paciente extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,6 +14,9 @@ public class ConsultaService {
 
     @Autowired
     private ConsultaRepository consultaRepository;
+    
+    @Autowired
+    private AuditoriaService auditoriaService;
 
     public List<Consulta> listarTodas() {
         return consultaRepository.findAll();
@@ -23,13 +26,17 @@ public class ConsultaService {
         return consultaRepository.findById(id);
     }
 
-    public void salvar(Consulta consulta) {
-        consultaRepository.save(consulta);
+    public Consulta salvar(Consulta consulta, String usuario) {
+        Consulta novaConsulta = consultaRepository.save(consulta);
+        auditoriaService.registrarAcao(consulta.getId() != null ? "Edição" : "Cadastro", "Consulta", usuario);
+        return novaConsulta;
     }
 
-    public void excluir(Long id) {
+    public void deletar(Long id, String usuario) {
         consultaRepository.deleteById(id);
+        auditoriaService.registrarAcao("Exclusão", "Consulta", usuario);
     }
+
     
     public List<Map<String, Object>> buscarConsultasPorPaciente(Long pacienteId) {
         List<Object[]> resultados = consultaRepository.findConsultasByPacienteId(pacienteId);

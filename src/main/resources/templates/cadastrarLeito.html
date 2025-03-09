@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastrar/Editar Leito</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<th:block th:replace="~{menuNavegacao.html}"></th:block>
+
+<div class="container my-4">
+    <h2 class="text-center mb-4" th:text="${leito.id == null} ? 'Cadastrar Leito' : 'Editar Leito'"></h2>
+
+    <form th:action="@{/leitos/salvar}" th:object="${leito}" method="post" class="mx-auto" style="max-width: 500px;">
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="mb-3">
+            <label class="form-label">Número do Leito:</label>
+            <input type="text" class="form-control" th:field="*{numero}" required />
+            <div th:if="${#fields.hasErrors('numero')}" th:errors="*{numero}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Status:</label>
+            <select class="form-select" th:field="*{status}" required>
+                <option value="">Selecione o status</option>
+                <option th:each="s : ${statusList}" th:value="${s}" th:text="${s}"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('status')}" th:errors="*{status}" class="text-danger"></div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-4">💾 Salvar</button>
+        </div>
+    </form>
+
+    <div class="text-center mt-4">
+        <a class="btn btn-outline-dark me-2" th:href="@{/leitos}">
+            📋 Lista de Leitos
+        </a>
+        <a class="btn btn-danger" th:href="@{/}">
+            🏠 Página Inicial
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
