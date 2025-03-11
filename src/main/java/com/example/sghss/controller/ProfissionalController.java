@@ -5,6 +5,8 @@ import com.example.sghss.service.ProfissionalService;
 import com.example.sghss.service.EspecialidadeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -51,8 +53,10 @@ public class ProfissionalController {
                 .orElseThrow(() -> new IllegalArgumentException("Especialidade não encontrada"));
 
         profissional.setEspecialidade(especialidade);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = authentication.getName();
 
-        if (!profissionalService.salvar(profissional)) {
+        if (!profissionalService.salvar(profissional, usuarioLogado)) {
             model.addAttribute("errorMessage", "Registro profissional já cadastrado!");
             return "mensagemErro";
         }
@@ -74,9 +78,12 @@ public class ProfissionalController {
         return "cadastrarProfissional";
     }
 
+    
     @GetMapping("/excluir/{id}")
     public String excluirProfissional(@PathVariable Long id) {
-        profissionalService.excluir(id);
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = authentication.getName();
+        profissionalService.excluir(id, usuarioLogado);
         return "redirect:/profissionais";
     }
 }

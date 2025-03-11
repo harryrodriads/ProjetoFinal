@@ -44,6 +44,12 @@ public class LeitoController {
             return "cadastrarLeito";
         }
     }
+    
+    @PostMapping("/excluir/{id}")
+    public String excluirLeito(@PathVariable Long id, String usuario) {
+        leitoService.deletar(id, usuario);
+        return "redirect:/leitos";
+    }
 
     private String obterUsuarioLogado() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

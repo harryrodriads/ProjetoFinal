@@ -3,6 +3,8 @@ import com.example.sghss.model.Paciente;
 import com.example.sghss.service.PacienteService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -40,7 +42,9 @@ public class PacienteController {
             return "cadastrarPaciente";
         }
         boolean isEdit = (paciente.getId() != null);
-        pacienteService.salvar(paciente);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = authentication.getName();
+        pacienteService.salvar(paciente, usuarioLogado);
         
         model.addAttribute("successMessage", isEdit ? "Paciente atualizado com sucesso!" : "Paciente cadastrado com sucesso!");
         model.addAttribute("redirectUrl", "/pacientes");
@@ -60,7 +64,9 @@ public class PacienteController {
 
     @GetMapping("/excluir/{id}")
     public String excluirPaciente(@PathVariable Long id) {
-        pacienteService.excluir(id);
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = authentication.getName(); 
+        pacienteService.excluir(id, usuarioLogado);
         return "redirect:/pacientes";
     }
 }

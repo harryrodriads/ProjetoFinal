@@ -6,8 +6,8 @@ import com.example.sghss.service.ProfissionalService;
 import com.example.sghss.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,18 +19,12 @@ public class UsuarioController {
 
     @Autowired
     private UsuarioService usuarioService;
-
-    /*@Autowired
-    private UsuarioRepository usuarioRepository;*/
     
     @Autowired
     private PacienteService pacienteService;
 
     @Autowired
     private ProfissionalService profissionalService;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/cadastrar")
     public String exibirFormCadastro(Model model) {
@@ -61,8 +55,6 @@ public class UsuarioController {
             return "mensagemErro";
         }
 
-        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
-
         if (usuario.getPerfil() == Perfil.PACIENTE && pacienteId != null) {
             usuario.setPaciente(pacienteService.buscarPorId(pacienteId));
         }
@@ -70,39 +62,18 @@ public class UsuarioController {
         if (usuario.getPerfil() == Perfil.MEDICO && profissionalId != null) {
             usuario.setProfissional(profissionalService.buscarPorId(profissionalId).orElse(null));
         }
-
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String senhaCriptografada = encoder.encode(usuario.getPassword());
-        usuario.setPassword(senhaCriptografada);
-        usuarioService.salvar(usuario);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = authentication.getName();
+        usuarioService.salvar(usuario, usuarioLogado);
 
         model.addAttribute("successMessage", "Usuário cadastrado com sucesso!");
         model.addAttribute("redirectUrl", "/usuarios");
         return "mensagemSucesso";
     }
 
-
     @GetMapping
     public String listarUsuarios(Model model) {
         model.addAttribute("usuarios", usuarioService.listarTodos());
         return "listarUsuarios";
     }
-    
-    /*@GetMapping("/criar")
-    @ResponseBody
-    public String criarUsuario(@RequestParam String username, @RequestParam String senha, @RequestParam Perfil perfil) {
-        if (usuarioRepository.findByUsername(username).isPresent()) {
-            return "Erro: Usuário já existe!";
-        }
-
-        String senhaCriptografada = passwordEncoder.encode(senha);
-        Usuario novoUsuario = new Usuario();
-        novoUsuario.setUsername(username);
-        novoUsuario.setPassword(senhaCriptografada);
-        novoUsuario.setPerfil(perfil);
-
-        usuarioRepository.save(novoUsuario);
-
-        return "Usuário criado com sucesso! Username: " + username;
-    }*/
 }

@@ -8,7 +8,6 @@
 </head>
 <body>
 <th:block th:replace="~{menuNavegacao.html}"></th:block>
-
 <div class="container my-5">
     <div class="d-flex align-items-center mb-4">
         <img src="/capa.jpg" alt="SGHSS Gestão Hospitalar" style="width: 550px; height: auto;" class="rounded shadow me-3">
@@ -17,21 +16,17 @@
             <p class="lead mb-0">Sistema de Gestão Hospitalar e de Serviços de Saúde</p>
         </div>
     </div>
-
     <div class="row row-cols-1 row-cols-md-2 g-4">
-        <!-- Pacientes -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
-                    <h4 class="card-title">🧑‍⚕️ Pacientes</h4>
+                    <h4 class="card-title">👤 Pacientes</h4>
                     <p class="card-text">Gerencie os pacientes cadastrados no sistema.</p>
                     <a th:href="@{/pacientes}" class="btn btn-outline-primary">📋 Listar</a>
                     <a th:href="@{/pacientes/cadastrar}" class="btn btn-outline-success">➕ Cadastrar</a>
                 </div>
             </div>
         </div>
-
-        <!-- Consultas -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
@@ -42,8 +37,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Profissionais -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
@@ -54,8 +47,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Especialidades -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
@@ -66,8 +57,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Internações -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
@@ -78,8 +67,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Leitos -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
@@ -90,8 +77,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Videochamadas -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">
@@ -102,8 +87,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Auditoria -->
         <div class="col">
             <div class="card shadow h-100">
                 <div class="card-body text-center">

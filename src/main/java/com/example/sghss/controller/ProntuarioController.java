@@ -1,17 +1,15 @@
 package com.example.sghss.controller;
-
 import com.example.sghss.model.Prontuario;
-import com.example.sghss.model.Consulta;
 import com.example.sghss.model.Paciente;
 import com.example.sghss.service.ProntuarioService;
 import com.example.sghss.service.ConsultaService;
 import com.example.sghss.service.PacienteService;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +55,8 @@ public class ProntuarioController {
         if (paciente == null) {
             return "redirect:/pacientes";
         }
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = authentication.getName();
         Prontuario prontuarioExistente = prontuarioService.buscarPorPacienteId(pacienteId).orElse(null);
 
         if (prontuarioExistente != null) {
@@ -67,11 +66,11 @@ public class ProntuarioController {
             prontuarioExistente.setTratamento(prontuario.getTratamento());
             prontuarioExistente.setPrescricao(prontuario.getPrescricao());
             prontuarioExistente.setDataAtualizacao(LocalDateTime.now());
-            prontuarioService.salvar(prontuarioExistente);
+            prontuarioService.salvar(prontuarioExistente, usuarioLogado);
         } else {
             prontuario.setPaciente(paciente);
             prontuario.setDataAtualizacao(LocalDateTime.now());
-            prontuarioService.salvar(prontuario);
+            prontuarioService.salvar(prontuario, usuarioLogado);
         }
 
         model.addAttribute("successMessage", "Prontuário atualizado com sucesso!");

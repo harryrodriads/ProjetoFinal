@@ -29,7 +29,7 @@
 			        <td th:text="${profissional.nome}"></td>
 			        <td th:text="${profissional.registroProf}"></td>
 			        <td th:text="${profissional.cargo}"></td>
-			        <td th:text="${profissional.especialidade.nome}"></td>
+					<td th:text="${profissional.especialidade != null ? profissional.especialidade.nome : 'Sem especialidade'}"></td>
 			        <td class="text-center">
 			            <a th:href="@{/profissionais/editar/{id}(id=${profissional.id})}" class="btn btn-sm btn-primary">✏️ Editar</a>
 						<a href="#" class="btn btn-sm btn-danger"

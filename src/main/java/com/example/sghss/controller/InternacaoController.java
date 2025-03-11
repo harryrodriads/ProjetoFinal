@@ -5,6 +5,8 @@ import com.example.sghss.service.PacienteService;
 import com.example.sghss.service.ProfissionalService;
 import com.example.sghss.service.LeitoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -48,9 +50,11 @@ public class InternacaoController {
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Internacao internacao, Model model) {
         internacao.setDataEntrada(LocalDateTime.now());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = authentication.getName();
         
         boolean isEdit = (internacao.getId() != null);
-        internacaoService.salvar(internacao);
+        internacaoService.salvar(internacao, usuarioLogado);
         
         model.addAttribute("successMessage", isEdit ? "Internação atualizada com sucesso!" : "Internação agendada com sucesso!");
         model.addAttribute("redirectUrl", "/internacoes");
@@ -72,7 +76,9 @@ public class InternacaoController {
 
     @GetMapping("/excluir/{id}")
     public String excluir(@PathVariable Long id) {
-        internacaoService.deletar(id);
+    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = authentication.getName();
+        internacaoService.deletar(id, usuarioLogado);
         return "redirect:/internacoes";
     }
 }

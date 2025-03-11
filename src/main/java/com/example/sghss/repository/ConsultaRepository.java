@@ -1,15 +1,17 @@
 package com.example.sghss.repository;
 import com.example.sghss.model.Consulta;
+import com.example.sghss.model.Profissional;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
 @Repository
 public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
-    
+	@Transactional
+    void deleteAllByProfissional(Profissional profissional);
 	@Query(value = """
 		    SELECT c.id, c.data_hora, c.status, p.nome AS profissionalNome
 		    FROM consultas c

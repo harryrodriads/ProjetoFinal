@@ -9,21 +9,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Service
 public class UsuarioService implements UserDetailsService {
 
-	 private final UsuarioRepository usuarioRepository;
-	 private final PasswordEncoder passwordEncoder;
+    private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuditoriaService auditoriaService;
 
-	 public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
-	        this.usuarioRepository = usuarioRepository;
-	        this.passwordEncoder = passwordEncoder;
-	}  
-	 
-    private static final Logger logger = LoggerFactory.getLogger(UsuarioService.class);
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, AuditoriaService auditoriaService) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.auditoriaService = auditoriaService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -44,31 +42,38 @@ public class UsuarioService implements UserDetailsService {
         return usuarioRepository.findById(id);
     }
 
-    public Usuario salvar(Usuario usuario) {
+    public Usuario salvar(Usuario usuario, String usuarioLogado) {
+        boolean isNovoUsuario = usuario.getId() == null;
+
         if (!usuario.getPassword().startsWith("$2a$")) { 
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         }
-        return usuarioRepository.save(usuario);
+
+        Usuario usuarioSalvo = usuarioRepository.save(usuario);
+
+        String acao = isNovoUsuario ? "Cadastro: " + usuarioSalvo.getUsername() : "Edição: " + usuarioSalvo.getUsername();
+        String entidade = "Usuário";
+
+        auditoriaService.registrarAcao(acao, entidade, usuarioLogado);
+
+        return usuarioSalvo;
     }
 
+    public void deletar(Long id, String usuarioLogado) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);
 
-    public void deletar(Long id) {
-        usuarioRepository.deleteById(id);
-    }
-    
-    public boolean verificarSenha(String username, String senhaDigitada) {
-        Optional<Usuario> usuarioOpt = usuarioRepository.findByUsername(username);
         if (usuarioOpt.isPresent()) {
             Usuario usuario = usuarioOpt.get();
-            return passwordEncoder.matches(senhaDigitada, usuario.getPassword());
+            String entidade = "Usuário";
+
+            usuarioRepository.deleteById(id);
+            auditoriaService.registrarAcao("Exclusão: " + usuario.getUsername(), entidade, usuarioLogado);
         }
-        return false;
     }
-    
-    public boolean validarSenha(String senhaDigitada, String senhaArmazenada) {
-        boolean senhaValida = passwordEncoder.matches(senhaDigitada, senhaArmazenada);
-        logger.info("Senha digitada: " + senhaDigitada);
-        logger.info("Senha válida? " + senhaValida);
-        return senhaValida;
+
+    public boolean verificarSenha(String username, String senhaDigitada) {
+        return usuarioRepository.findByUsername(username)
+                .map(usuario -> passwordEncoder.matches(senhaDigitada, usuario.getPassword()))
+                .orElse(false);
     }
 }

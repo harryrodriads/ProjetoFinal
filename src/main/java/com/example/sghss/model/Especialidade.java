@@ -16,8 +16,8 @@ public class Especialidade {
 
 	private String descricao;
 
-	@OneToMany(mappedBy = "especialidade", cascade = CascadeType.ALL)
-    private List<Profissional> profissionais;
+	@OneToMany(mappedBy = "especialidade", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Profissional> profissionais;
 
     // Getters e Setters
     public Long getId() {

@@ -17,16 +17,18 @@
             <tr>
                 <th class="text-center">ID</th>
                 <th class="text-center">Ação</th>
-                <th class="text-center">Usuário</th>
-                <th class="text-center">Data</th>
+                <th class="text-center">Entidade</th>
+				<th class="text-center">Usuário</th>
+                <th class="text-center">Data/Hora</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="log : ${auditorias}">
-                <td th:text="${log.id}"></td>
-                <td th:text="${log.acao}"></td>
-                <td th:text="${log.usuario}"></td>
-                <td th:text="${#temporals.format(log.timestamp, 'dd/MM/yyyy HH:mm')}"></td>
+                <td class="text-center" th:text="${log.id}"></td>
+                <td class="text-center" th:text="${log.acao}"></td>
+                <td class="text-center" th:text="${log.entidade}"></td>
+                <td class="text-center" th:text="${log.usuario}"></td>
+                <td class="text-center" th:text="${#temporals.format(log.timestamp, 'dd/MM/yyyy HH:mm')}"></td>
             </tr>
             </tbody>
         </table>
