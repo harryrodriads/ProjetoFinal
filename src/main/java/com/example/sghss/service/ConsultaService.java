@@ -28,6 +28,10 @@ public class ConsultaService {
         return consultaRepository.findById(id);
     }
 
+    public boolean existeConsultaPorProfissional(Long profissionalId) {
+        return consultaRepository.existsByProfissionalId(profissionalId);
+    }
+    
     @Transactional
     public Consulta salvar(Consulta consulta, String usuario) {
         boolean isNovaConsulta = consulta.getId() == null;

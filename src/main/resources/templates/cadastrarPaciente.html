@@ -23,7 +23,7 @@
     <form th:action="@{/pacientes/salvar}" th:object="${paciente}" method="post" class="mx-auto" style="max-width: 500px;">
         <input type="hidden" th:field="*{id}" />
         <div class="mb-3">
-            <label class="form-label">Nome:</label>
+            <label class="form-label">Nome Completo:</label>
             <input type="text" class="form-control" th:field="*{nome}" required/>
         </div>
         <div class="mb-3">

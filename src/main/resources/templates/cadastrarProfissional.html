@@ -11,35 +11,31 @@
 <th:block th:replace="~{menuNavegacao.html}"></th:block>
 <div class="container my-4">
     <h2 class="text-center mb-4" th:text="${profissional.id == null} ? 'Cadastrar Profissional' : 'Editar Profissional'"></h2>
-
     <form th:action="@{/profissionais/salvar}" th:object="${profissional}" method="post" class="mx-auto" style="max-width: 600px;">
         <input type="hidden" th:field="*{id}" />
-
         <div class="mb-3">
             <label class="form-label">Nome:</label>
             <input type="text" class="form-control" th:field="*{nome}" required />
             <div th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-danger"></div>
         </div>
-
         <div class="mb-3">
             <label class="form-label">Registro Profissional:</label>
             <input type="text" class="form-control" th:field="*{registroProf}" required />
             <div th:if="${#fields.hasErrors('registroProf')}" th:errors="*{registroProf}" class="text-danger"></div>
         </div>
-
         <div class="mb-3">
             <label class="form-label">Cargo:</label>
             <input type="text" class="form-control" th:field="*{cargo}" required />
             <div th:if="${#fields.hasErrors('cargo')}" th:errors="*{cargo}" class="text-danger"></div>
         </div>
-
 		<div class="mb-3">
 		    <label class="form-label">Especialidade:</label>
 		    <select class="form-select" name="especialidadeId" required>
 		        <option value="">Selecione uma especialidade</option>
 		        <option th:each="especialidade : ${especialidades}"
 		                th:value="${especialidade.id}"
-		                th:text="${especialidade.nome}">
+		                th:text="${especialidade.nome}"
+		                th:selected="${profissional.especialidade != null and profissional.especialidade.id == especialidade.id}">
 		        </option>
 		    </select>
 		</div>
@@ -47,7 +43,6 @@
             <button type="submit" class="btn btn-primary px-4">💾 Salvar</button>
         </div>
     </form>
-
     <div class="text-center mt-4">
         <a class="btn btn-outline-dark me-2" th:href="@{/profissionais}">
             📋 Lista de Profissionais

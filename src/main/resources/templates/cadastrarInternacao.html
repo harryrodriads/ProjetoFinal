@@ -11,8 +11,8 @@
 
 <div class="container my-4">
     <h2 class="text-center mb-4">🏥 Cadastrar Internação</h2>
-
     <form th:action="@{/internacoes/salvar}" th:object="${internacao}" method="post">
+		<input type="hidden" th:field="*{id}" />
         <div class="mb-3">
             <label for="paciente" class="form-label">Paciente:</label>
             <select id="paciente" name="paciente" class="form-select" th:field="*{paciente}" required>

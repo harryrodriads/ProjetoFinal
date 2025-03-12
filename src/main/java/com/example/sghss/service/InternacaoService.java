@@ -25,17 +25,17 @@ public class InternacaoService {
     }
 
     public Internacao salvar(Internacao internacao, String usuario) {
-        boolean isNovaInternacao = internacao.getId() == null;
-
-        Internacao novaInternacao = internacaoRepository.save(internacao);
-        String nomePaciente = (novaInternacao.getPaciente() != null) ? novaInternacao.getPaciente().getNome() : "Paciente Desconhecido";
-
-        String acao = isNovaInternacao ? "Cadastro: " + nomePaciente : "Edição: " + nomePaciente;
-        String entidade = "Internação";
-
-        auditoriaService.registrarAcao(acao, entidade, usuario);
-
-        return novaInternacao;
+        if (internacao.getId() != null) {
+            Optional<Internacao> existente = internacaoRepository.findById(internacao.getId());
+            if (existente.isPresent()) {
+                Internacao internacaoAtualizada = existente.get();
+                internacaoAtualizada.setPaciente(internacao.getPaciente());
+                internacaoAtualizada.setProfissional(internacao.getProfissional());
+                internacaoAtualizada.setLeito(internacao.getLeito());
+                return internacaoRepository.save(internacaoAtualizada);
+            }
+        }
+        return internacaoRepository.save(internacao);
     }
 
     public void deletar(Long id, String usuario) {

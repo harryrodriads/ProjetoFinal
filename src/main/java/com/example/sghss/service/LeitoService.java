@@ -1,5 +1,4 @@
 package com.example.sghss.service;
-
 import com.example.sghss.model.Leito;
 import com.example.sghss.repository.LeitoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +17,10 @@ public class LeitoService {
 
     public List<Leito> listarTodos() {
         return leitoRepository.findAll();
+    }
+    
+    public Optional<Leito> buscarPorId(Long id) {
+        return leitoRepository.findById(id);
     }
 
     public Leito salvar(Leito leito, String usuario) {

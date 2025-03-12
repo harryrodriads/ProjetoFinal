@@ -40,16 +40,22 @@
             <div th:if="${param.error}" class="alert alert-danger text-center">
                 Usuário ou senha inválidos.
             </div>
-
             <div class="mb-3">
                 <label class="form-label fw-semibold">Usuário:</label>
                 <input type="text" class="form-control" name="username" required autofocus>
             </div>
-
             <div class="mb-3">
                 <label class="form-label fw-semibold">Senha:</label>
                 <input type="password" class="form-control" name="password" required>
             </div>
+			<div class="mb-3">
+			    <label class="form-label fw-semibold">Unidade:</label>
+			    <select class="form-control" name="unidade" required>
+			        <option value="IPANEMA">IPANEMA</option>
+			        <option value="CENTRO-OESTE">CENTRO-OESTE</option>
+			        <option value="PLANALTO">PLANALTO</option>
+			    </select>
+			</div>
 
             <button type="submit" class="btn btn-primary w-100">🔓 Entrar</button>
         </form>

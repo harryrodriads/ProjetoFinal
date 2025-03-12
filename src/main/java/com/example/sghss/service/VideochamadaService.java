@@ -1,5 +1,7 @@
 package com.example.sghss.service;
+import com.example.sghss.model.Consulta;
 import com.example.sghss.model.Videochamada;
+import com.example.sghss.repository.ConsultaRepository;
 import com.example.sghss.repository.VideochamadaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ public class VideochamadaService {
 
     @Autowired
     private AuditoriaService auditoriaService;
+    
+    @Autowired
+    private ConsultaRepository consultaRepository;
 
     public List<Videochamada> listarTodas() {
         return videochamadaRepository.findAll();
@@ -24,34 +29,43 @@ public class VideochamadaService {
     }
 
     public Videochamada salvar(Videochamada videochamada, String usuario) {
-        boolean isNovaVideochamada = videochamada.getId() == null;
+        boolean isNovaVideochamada = videochamada.getId() == null || !videochamadaRepository.existsById(videochamada.getId());
 
         Videochamada novaVideochamada = videochamadaRepository.save(videochamada);
+        Optional<Consulta> consultaOpt = consultaRepository.findById(novaVideochamada.getConsulta().getId());
+        
+        String nomePaciente = "Paciente Desconhecido";
+        if (consultaOpt.isPresent()) {
+            Consulta consulta = consultaOpt.get();
+            if (consulta.getPaciente() != null && consulta.getPaciente().getNome() != null) {
+                nomePaciente = consulta.getPaciente().getNome();
+            }
+        }
 
-        String nomePaciente = (novaVideochamada.getConsulta() != null && novaVideochamada.getConsulta().getPaciente() != null)
-                ? novaVideochamada.getConsulta().getPaciente().getNome()
-                : "Paciente Desconhecido";
-
-        String acao = isNovaVideochamada ? "Cadastro: "  + nomePaciente : "Edição: "+ nomePaciente;
+        String acao = isNovaVideochamada ? "Cadastro: " + nomePaciente : "Edição: " + nomePaciente;
         String entidade = "Videochamada";
 
         auditoriaService.registrarAcao(acao, entidade, usuario);
 
         return novaVideochamada;
     }
-
+    
     public void deletar(Long id, String usuario) {
         Optional<Videochamada> videochamadaOpt = videochamadaRepository.findById(id);
 
         if (videochamadaOpt.isPresent()) {
             Videochamada videochamada = videochamadaOpt.get();
+            Optional<Consulta> consultaOpt = consultaRepository.findById(videochamada.getConsulta().getId());
 
-            String nomePaciente = (videochamada.getConsulta() != null && videochamada.getConsulta().getPaciente() != null)
-                    ? videochamada.getConsulta().getPaciente().getNome()
-                    : "Paciente Desconhecido";
+            String nomePaciente = "Paciente Desconhecido";
+            if (consultaOpt.isPresent()) {
+                Consulta consulta = consultaOpt.get();
+                if (consulta.getPaciente() != null && consulta.getPaciente().getNome() != null) {
+                    nomePaciente = consulta.getPaciente().getNome();
+                }
+            }
 
             String entidade = "Videochamada";
-
             videochamadaRepository.deleteById(id);
             auditoriaService.registrarAcao("Exclusão: " + nomePaciente, entidade, usuario);
         }

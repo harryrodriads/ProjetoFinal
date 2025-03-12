@@ -11,7 +11,7 @@ public class Videochamada extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "consulta_id", nullable = false)
     @NotNull(message = "A consulta associada é obrigatória")
     private Consulta consulta;

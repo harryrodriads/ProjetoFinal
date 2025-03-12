@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +19,7 @@ public class VideochamadaController {
 
     @Autowired
     private VideochamadaService videochamadaService;
-    
+
     @Autowired
     private ConsultaService consultaService;
 
@@ -44,24 +45,64 @@ public class VideochamadaController {
         return "cadastrarVideochamada";
     }
 
+    @GetMapping("/editar/{id}")
+    public String editarForm(@PathVariable Long id, Model model) {
+        Optional<Videochamada> videochamadaOpt = videochamadaService.buscarPorId(id);
+        if (videochamadaOpt.isPresent()) {
+            Videochamada videochamada = videochamadaOpt.get();
+            model.addAttribute("videochamada", videochamada);
+            model.addAttribute("consultas", consultaService.listarTodas());
+            if (videochamada.getConsulta() != null) {
+                model.addAttribute("consultaSelecionada", videochamada.getConsulta().getId());
+            } else {
+                model.addAttribute("consultaSelecionada", null);
+            }
+
+            model.addAttribute("statusList", StatusVideo.values());
+            return "cadastrarVideochamada";
+        }
+        return "redirect:/videochamadas";
+    }
+
+
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Videochamada videochamada, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usuarioLogado = authentication.getName();
-     
-        boolean isEdit = (videochamada.getId() != null);
-        videochamadaService.salvar(videochamada, usuarioLogado);
-        model.addAttribute("successMessage", isEdit ? "Videochamada atualizado com sucesso!" : "Videochamada cadastrado com sucesso!");
+
+        if (videochamada.getId() != null) {
+            Optional<Videochamada> existenteOpt = videochamadaService.buscarPorId(videochamada.getId());
+            if (existenteOpt.isPresent()) {
+                Videochamada existente = existenteOpt.get();
+                
+                existente.setUrlSala(videochamada.getUrlSala());
+                existente.setStatus(videochamada.getStatus());
+                existente.setConsulta(videochamada.getConsulta());
+
+                videochamadaService.salvar(existente, usuarioLogado);
+                model.addAttribute("successMessage", "Videochamada atualizada com sucesso!");
+            }
+        } else { 
+            videochamadaService.salvar(videochamada, usuarioLogado);
+            model.addAttribute("successMessage", "Videochamada cadastrada com sucesso!");
+        }
+
         model.addAttribute("redirectUrl", "/videochamadas");
         return "mensagemSucesso";
     }
 
+
     @GetMapping("/excluir/{id}")
     public String excluir(@PathVariable Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String usuarioLogado = authentication.getName(); 
+        String usuarioLogado = authentication.getName();
 
         videochamadaService.deletar(id, usuarioLogado);
         return "redirect:/videochamadas";
+    }
+
+    @GetMapping("/salaVideo")
+    public String salaVideo() {
+        return "salaVideo";
     }
 }

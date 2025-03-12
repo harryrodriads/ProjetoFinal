@@ -13,7 +13,7 @@ public class Consulta extends BaseEntity{
     private LocalDateTime dataHora;
     private String status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "paciente_id", nullable = false)
     private Paciente paciente;
     

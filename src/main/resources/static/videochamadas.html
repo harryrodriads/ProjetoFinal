@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Videochamada</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 80px;
+        }
+
+        .video-container {
+            background-color: #000;
+            color: white;
+            width: 600px;
+            height: 350px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            margin-top: 5px;
+        }
+
+        .form-container {
+            width: 600px;
+            margin-top: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow fixed-top">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">🏥 SGHSS</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                    <span class="text-white fw-bold me-2" th:text="${#strings.toUpperCase(#authentication.name)}"></span>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="video-container text-center">
+    📡 Aguardando consulta...
+</div>
+<div class="form-container">
+    <h4 class="text-center mb-3">📝 Informações da Consulta</h4>
+    
+    <form th:action="@{/videochamadas/salvar}" th:object="${videochamada}" method="post">
+        <div class="mb-3">
+            <label class="form-label">Prescrição:</label>
+            <textarea class="form-control" rows="3" th:field="*{prescricao}" placeholder="Digite a prescrição médica aqui..."></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Observação:</label>
+            <textarea class="form-control" rows="3" th:field="*{observacao}" placeholder="Adicione observações sobre a consulta..."></textarea>
+        </div>
+        <div class="text-center">
+            <button class="btn btn-success px-4" disabled>💾 Aguardando...</button>
+        </div>
+		<div class="text-center">
+		    <a href="/" class="btn btn-danger mt-3">🏠 Página Inicial</a>
+		</div>
+    </form>
+</div>
+</body>
+</html>

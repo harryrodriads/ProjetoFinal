@@ -10,8 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,24 +46,24 @@ public class InternacaoController {
     }
 
     @PostMapping("/salvar")
-    public String salvar(@ModelAttribute Internacao internacao, Model model) {
-        internacao.setDataEntrada(LocalDateTime.now());
+    public String salvarInternacao(@ModelAttribute Internacao internacao, Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usuarioLogado = authentication.getName();
-        
-        boolean isEdit = (internacao.getId() != null);
+
+        boolean isEdicao = (internacao.getId() != null);
+
         internacaoService.salvar(internacao, usuarioLogado);
-        
-        model.addAttribute("successMessage", isEdit ? "Internação atualizada com sucesso!" : "Internação agendada com sucesso!");
+        model.addAttribute("successMessage", isEdicao ? "Internação atualizada com sucesso!" : "Internação cadastrada com sucesso!");
         model.addAttribute("redirectUrl", "/internacoes");
-        return "mensagemSucesso";
+        
+        return "mensagemSucesso"; 
     }
 
     @GetMapping("/editar/{id}")
-    public String editarForm(@PathVariable Long id, Model model) {
-        Optional<Internacao> internacao = internacaoService.buscarPorId(id);
-        if (internacao.isPresent()) {
-            model.addAttribute("internacao", internacao.get());
+    public String editarInternacao(@PathVariable Long id, Model model) {
+        Optional<Internacao> internacaoOpt = internacaoService.buscarPorId(id);
+        if (internacaoOpt.isPresent()) {
+            model.addAttribute("internacao", internacaoOpt.get());
             model.addAttribute("pacientes", pacienteService.listarTodos());
             model.addAttribute("profissionais", profissionalService.listarTodos());
             model.addAttribute("leitos", leitoService.listarTodos());

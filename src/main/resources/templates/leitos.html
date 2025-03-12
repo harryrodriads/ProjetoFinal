@@ -8,7 +8,6 @@
 </head>
 <body>
 <th:block th:replace="~{menuNavegacao.html}"></th:block>
-
 <div class="container my-4">
     <h2 class="text-center mb-4">Gestão de Leitos</h2>
     <div class="table-responsive">
@@ -39,27 +38,38 @@
         <a th:href="@{/}" class="btn btn-danger">🏠 Página Inicial</a>
     </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    function confirmarExclusao(element) {
-        let leitoId = element.getAttribute("data-id");
-        let url = `/leitos/excluir/${leitoId}`;
-        Swal.fire({
-            title: "Tem certeza?",
-            text: "Deseja excluir este leito?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Sim, excluir!",
-            cancelButtonText: "Cancelar"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = url;
-            }
-        });
-    }
+	function confirmarExclusao(element) {
+	    let leitoId = element.getAttribute("data-id");
+	    let url = `/leitos/excluir/${leitoId}`;
+	    Swal.fire({
+	        title: "Tem certeza?",
+	        text: "Deseja excluir este leito?",
+	        icon: "warning",
+	        showCancelButton: true,
+	        confirmButtonColor: "#d33",
+	        cancelButtonColor: "#3085d6",
+	        confirmButtonText: "Sim, excluir!",
+	        cancelButtonText: "Cancelar"
+	    }).then((result) => {
+	        if (result.isConfirmed) {
+	            fetch(url, {
+	                method: "DELETE"
+	            }).then(response => {
+	                if (response.ok) {
+	                    Swal.fire("Excluído!", "O leito foi removido.", "success").then(() => {
+	                        location.reload();
+	                    });
+	                } else {
+	                    Swal.fire("Erro!", "Não é possível excluir leitos, apenas alterar seu Status ou criar um novo.", "error");
+	                }
+	            }).catch(error => {
+	                Swal.fire("Erro!", "Ocorreu um erro ao excluir o leito.", "error");
+	            });
+	        }
+	    });
+	}
 </script>
 </body>
 </html>

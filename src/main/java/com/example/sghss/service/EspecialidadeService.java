@@ -44,10 +44,10 @@ public class EspecialidadeService {
         if (especialidadeOpt.isPresent()) {
             Especialidade especialidade = especialidadeOpt.get();
 
-            if (especialidade.getProfissionais() != null && !especialidade.getProfissionais().isEmpty()) {
-                especialidade.getProfissionais().forEach(profissional -> profissional.setEspecialidade(null));
-                profissionalRepository.saveAll(especialidade.getProfissionais());
+            if (!especialidade.getProfissionais().isEmpty()) {
+                throw new IllegalStateException("Não é possível excluir a especialidade pois existem profissionais associados.");
             }
+
             especialidadeRepository.deleteById(id);
             auditoriaService.registrarAcao("Exclusão: " + especialidade.getNome(), "Especialidade", usuario);
         }

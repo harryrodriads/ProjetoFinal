@@ -47,9 +47,10 @@
     function confirmarExclusao(element) {
         let especialidadeId = element.getAttribute("data-id");
         let url = `/especialidades/excluir/${especialidadeId}`;
+
         Swal.fire({
             title: "Tem certeza?",
-            text: "Se você excluir esta especialidade, todos os profissionais vinculados a ela também serão removidos permanentemente. Deseja excluir mesmo assim?",
+            text: "Deseja excluir esta especialidade?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -58,7 +59,22 @@
             cancelButtonText: "Cancelar"
         }).then((result) => {
             if (result.isConfirmed) {
-                window.location.href = url;
+                fetch(url, { method: "DELETE" })
+                    .then(response => response.json().then(data => ({
+                        status: response.status,
+                        body: data
+                    })))
+                    .then(result => {
+                        if (result.status === 200) {
+                            Swal.fire("Excluído!", "A especialidade foi removida com sucesso.", "success")
+                                .then(() => location.reload());
+                        } else {
+                            Swal.fire("Atenção! Não é possível excluir a especialidade pois existem profissionais associados.", result.body, "warning");
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire("Erro!", "Ocorreu um erro ao excluir a especialidade.", "error");
+                    });
             }
         });
     }

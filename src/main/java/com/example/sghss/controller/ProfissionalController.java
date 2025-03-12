@@ -2,6 +2,7 @@ package com.example.sghss.controller;
 import com.example.sghss.model.Profissional;
 import com.example.sghss.model.Especialidade;
 import com.example.sghss.service.ProfissionalService;
+import com.example.sghss.service.ConsultaService;
 import com.example.sghss.service.EspecialidadeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class ProfissionalController {
 
     @Autowired
     private EspecialidadeService especialidadeService;
+    
+    @Autowired
+    private ConsultaService consultaService;
 
     @GetMapping
     public String listarProfissionais(Model model) {
@@ -79,11 +83,16 @@ public class ProfissionalController {
     }
 
     
-    @GetMapping("/excluir/{id}")
-    public String excluirProfissional(@PathVariable Long id) {
-    	Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    @DeleteMapping("/excluir/{id}")
+    @ResponseBody
+    public String excluir(@PathVariable Long id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usuarioLogado = authentication.getName();
+        if (consultaService.existeConsultaPorProfissional(id)) {
+            return "erro";
+        }
+
         profissionalService.excluir(id, usuarioLogado);
-        return "redirect:/profissionais";
+        return "sucesso";
     }
 }

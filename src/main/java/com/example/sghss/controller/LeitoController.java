@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/leitos")
@@ -33,21 +34,31 @@ public class LeitoController {
 
     @PostMapping("/salvar")
     public String salvar(@ModelAttribute Leito leito, Model model) {
-        try {
-            String usuario = obterUsuarioLogado();
-            leitoService.salvar(leito, usuario);
-            return "redirect:/leitos";
-        } catch (Exception e) {
-            model.addAttribute("erro", "Erro ao salvar o leito. Verifique os dados e tente novamente.");
-            model.addAttribute("leito", leito);
+    	String usuario = obterUsuarioLogado();
+        boolean isEdit = (leito.getId() != null);
+        
+        leitoService.salvar(leito, usuario);
+        model.addAttribute("successMessage", isEdit ? "Leito atualizado com sucesso!" : "Leito cadastrado com sucesso!");
+        model.addAttribute("redirectUrl", "/leitos");
+        return "mensagemSucesso";
+    }
+
+    @DeleteMapping("/excluir/{id}")
+    public String excluirLeito(@PathVariable Long id) {
+        String usuario = obterUsuarioLogado();
+        leitoService.deletar(id, usuario);
+        return "redirect:/leitos";
+    }
+
+    @GetMapping("/editar/{id}")
+    public String editarForm(@PathVariable Long id, Model model) {
+        Optional<Leito> leitoOpt = leitoService.buscarPorId(id);
+        
+        if (leitoOpt.isPresent()) {
+            model.addAttribute("leito", leitoOpt.get());
             model.addAttribute("statusList", StatusLeito.values());
             return "cadastrarLeito";
         }
-    }
-    
-    @PostMapping("/excluir/{id}")
-    public String excluirLeito(@PathVariable Long id, String usuario) {
-        leitoService.deletar(id, usuario);
         return "redirect:/leitos";
     }
 

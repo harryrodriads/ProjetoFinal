@@ -8,17 +8,16 @@
 </head>
 <body>
 <th:block th:replace="~{menuNavegacao.html}"></th:block>
-
 <div class="container my-4">
     <h2 class="text-center mb-4">Histórico de Auditoria</h2>
-    <div class="table-responsive">
+    <div class="table-responsive" th:if="${not #lists.isEmpty(auditorias)}">
         <table class="table table-striped table-bordered">
             <thead class="table-dark">
             <tr>
                 <th class="text-center">ID</th>
                 <th class="text-center">Ação</th>
                 <th class="text-center">Entidade</th>
-				<th class="text-center">Usuário</th>
+                <th class="text-center">Usuário</th>
                 <th class="text-center">Data/Hora</th>
             </tr>
             </thead>
@@ -32,6 +31,9 @@
             </tr>
             </tbody>
         </table>
+    </div>
+    <div th:if="${#lists.isEmpty(auditorias)}" class="text-center text-muted mt-4">
+        <p>📄 Nenhum registro de auditoria encontrado.</p>
     </div>
     <div class="text-center mt-4">
         <a th:href="@{/}" class="btn btn-danger">🏠 Página Inicial</a>

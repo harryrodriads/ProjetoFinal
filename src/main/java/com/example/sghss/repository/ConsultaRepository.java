@@ -12,6 +12,7 @@ import java.util.List;
 public interface ConsultaRepository extends JpaRepository<Consulta, Long> {
 	@Transactional
     void deleteAllByProfissional(Profissional profissional);
+	boolean existsByProfissionalId(Long profissionalId);
 	@Query(value = """
 		    SELECT c.id, c.data_hora, c.status, p.nome AS profissionalNome
 		    FROM consultas c

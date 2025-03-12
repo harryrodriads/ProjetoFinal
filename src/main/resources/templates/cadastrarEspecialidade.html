@@ -11,27 +11,22 @@
 <th:block th:replace="~{menuNavegacao.html}"></th:block>
 <div class="container my-4">
     <h2 class="text-center mb-4" th:text="${especialidade.id == null} ? 'Cadastrar Especialidade' : 'Editar Especialidade'"></h2>
-
-    <form th:action="@{/especialidades/salvar}" th:object="${especialidade}" method="post" class="mx-auto" style="max-width: 500px;">
-        <input type="hidden" th:field="*{id}" />
-
-        <div class="mb-3">
-            <label class="form-label">Nome da Especialidade:</label>
-            <input type="text" class="form-control" th:field="*{nome}" required />
-            <div th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-danger"></div>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Descrição:</label>
-            <input type="text" class="form-control" th:field="*{descricao}" required />
-            <div th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}" class="text-danger"></div>
-        </div>
-
-        <div class="text-center">
-            <button type="submit" class="btn btn-primary px-4">💾 Salvar</button>
-        </div>
-    </form>
-
+	<form th:action="@{/especialidades/salvar}" th:object="${especialidade}" method="post" class="mx-auto" style="max-width: 500px;">
+	    <input type="hidden" th:field="*{id}" />
+	    <div class="mb-3">
+	        <label class="form-label">Nome da Especialidade:</label>
+	        <input type="text" class="form-control" th:field="*{nome}" required />
+	        <div th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-danger"></div>
+	    </div>
+	    <div class="mb-3">
+	        <label class="form-label">Descrição:</label>
+	        <input type="text" class="form-control" th:field="*{descricao}" required />
+	        <div th:if="${#fields.hasErrors('descricao')}" th:errors="*{descricao}" class="text-danger"></div>
+	    </div>
+	    <div class="text-center">
+	        <button type="submit" class="btn btn-primary px-4">💾 Salvar</button>
+	    </div>
+	</form>
     <div class="text-center mt-4">
         <a class="btn btn-outline-dark me-2" th:href="@{/especialidades}">
             📋 Lista de Especialidades
