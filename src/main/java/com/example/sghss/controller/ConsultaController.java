@@ -126,6 +126,13 @@ public class ConsultaController {
         return "visualizarProntuario";
     }
     
+    @GetMapping("/cancelar/{id}")
+    public String cancelarConsulta(@PathVariable Long id) {
+        String usuario = obterUsuarioLogado();
+        consultaService.cancelarConsulta(id, usuario);
+        return "redirect:/consultas";
+    }
+    
     private String obterUsuarioLogado() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {

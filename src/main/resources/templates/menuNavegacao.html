@@ -41,13 +41,16 @@
                 <li class="nav-item">
                     <a class="nav-link" th:href="@{/auditoria}">📜 Auditoria</a>
                 </li>
-                <li class="nav-item d-flex align-items-center">
-                    <span class="text-white fw-bold me-2" th:text="${#strings.toUpperCase(#authentication.name)}"></span>
-					<span class="text-white fw-bold me-2" th:if="${session.unidade != null}"></span>
-                    <form th:action="@{/logout}" method="post" class="d-inline">
-                        <button type="submit" class="btn btn-outline-light">SAIR</button>
-                    </form>
-                </li>
+				<li class="nav-item d-flex align-items-center">
+				    <span class="text-white fw-bold me-2">
+				        <span th:text="${#strings.toUpperCase(#authentication.name)}"></span>
+				        (<span th:text="${#strings.replace(#authentication.authorities, 'ROLE_', '')}"></span>)
+				    </span>
+
+				    <form th:action="@{/logout}" method="post" class="d-inline">
+				        <button type="submit" class="btn btn-outline-light">SAIR</button>
+				    </form>
+				</li>
             </ul>
         </div>
     </div>

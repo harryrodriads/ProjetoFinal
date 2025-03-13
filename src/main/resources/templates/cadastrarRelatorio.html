@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cadastrar/Editar Relatório Financeiro</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<th:block th:replace="~{menuNavegacao.html}"></th:block>
+
+<div class="container my-4">
+    <h2 class="text-center mb-4" th:text="${relatorioFinanceiro.id == null} ? 'Cadastrar Relatório Financeiro' : 'Editar Relatório Financeiro'"></h2>
+
+    <form th:action="@{/relatoriosFinanceiros/salvar}" th:object="${relatorioFinanceiro}" method="post" class="mx-auto" style="max-width: 800px;">
+        <input type="hidden" th:field="*{id}" />
+
+        <div class="mb-3">
+            <label class="form-label">Título:</label>
+            <input type="text" class="form-control" th:field="*{titulo}" required />
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="text-center">Descrição</th>
+                        <th class="text-center">Entrada (R$)</th>
+                        <th class="text-center">Despesa (R$)</th>
+                        <th class="text-center">Valor Final (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" class="form-control" th:field="*{descricao}" required /></td>
+                        <td><input type="text" class="form-control entrada" th:field="*{entrada}" pattern="^\d+(\.\d{1,2})?$" oninput="formatarNumero(this); calcularTotal()" required /></td>
+                        <td><input type="text" class="form-control despesa" th:field="*{despesa}" pattern="^\d+(\.\d{1,2})?$" oninput="formatarNumero(this); calcularTotal()" required /></td>
+                        <td><input type="text" class="form-control valor" id="valorFinal" readonly /></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-4">💾 Salvar</button>
+        </div>
+    </form>
+    <div class="text-center mt-4">
+        <a class="btn btn-outline-dark me-2" th:href="@{/relatoriosFinanceiros}">
+            📋 Lista de Relatórios
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function formatarNumero(campo) {
+        let valor = campo.value.replace(",", ".");
+        campo.value = valor.replace(/[^0-9.]/g, "").replace(/(\..*)\./g, "$1");
+    }
+
+    function calcularTotal() {
+        let entrada = parseFloat(document.querySelector(".entrada").value.replace(",", ".")) || 0;
+        let despesa = parseFloat(document.querySelector(".despesa").value.replace(",", ".")) || 0;
+        let valorFinal = entrada - despesa;
+
+        document.getElementById("valorFinal").value = valorFinal.toFixed(2);
+    }
+</script>
+</body>
+</html>

@@ -20,7 +20,13 @@
             <p><strong>🔎 Diagnóstico:</strong> <span th:text="${prontuario.diagnostico} ?: 'Não informado'"></span></p>
             <p><strong>💊 Tratamento:</strong> <span th:text="${prontuario.tratamento} ?: 'Não informado'"></span></p>
             <p><strong>📝 Prescrição:</strong> <span th:text="${prontuario.prescricao} ?: 'Não informado'"></span></p>
-            <p class="text-muted"><small>📅 Última atualização: <span th:text="${#dates.format(prontuario.dataAtualizacao, 'dd/MM/yyyy HH:mm')}"></span></small></p>
+			<p><strong>🔬 Exames:</strong> <span th:text="${prontuario.exames} ?: 'Não informado'"></span></p>
+			<p class="text-muted"><strong>
+			    <small>📅 Última atualização: 
+			        <span th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}"></span>
+			    </small><strong>
+			</p>
+
         </div>
     </div>
     <div class="mb-4">

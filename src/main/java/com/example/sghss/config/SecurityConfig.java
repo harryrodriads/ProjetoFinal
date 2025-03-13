@@ -18,15 +18,18 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/usuarios/cadastrar", "/usuarios/salvar", "/index").permitAll() 
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/login", "/usuarios/cadastrar", "/usuarios/salvar", "/index",
+                                 "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/relatoriosFinanceiros/**", "/estoque/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
+            
             .formLogin(form -> form
                 .loginPage("/login")
-                .defaultSuccessUrl("/", true) 
+                .defaultSuccessUrl("/", true)
                 .permitAll()
             )
+            
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")
@@ -35,4 +38,5 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 }

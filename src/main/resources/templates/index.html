@@ -41,7 +41,9 @@
     <div class="d-flex align-items-center mb-4">
         <img src="/capa.jpg" alt="SGHSS Gestão Hospitalar" style="width: 550px; height: auto;" class="rounded shadow me-3">
         <div>
-            <h1 class="fw-bold mb-2 text-center">🏥 Bem-vindo ao SGHSS</h1>
+			<h1 class="fw-bold mb-2 text-center">
+			    🏥 Bem-vindo ao SGHSS, <span class="fw-bold text-dark" th:text="${#strings.capitalize(#authentication.name)}"></span>!
+			</h1>
             <p class="lead mb-0 text-center">Sistema de Gestão Hospitalar e de Serviços de Saúde</p>
         </div>
     </div>
@@ -116,15 +118,35 @@
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card shadow h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title">📜 Auditoria</h4>
-                    <p class="card-text">Histórico de ações no sistema.</p>
-                    <a th:href="@{/auditoria}" class="btn btn-outline-primary">📋 Consultar</a>
-                </div>
-            </div>
-        </div>
+		<div sec:authorize="hasAuthority('ROLE_ADMIN')" class="col">
+		    <div class="card shadow h-100">
+		        <div class="card-body text-center">
+		            <h4 class="card-title">💰 Relatórios Financeiros</h4>
+		            <p class="card-text">Gere e visualize relatórios financeiros.</p>
+		            <a th:href="@{/relatoriosFinanceiros}" class="btn btn-outline-primary">📋 Abrir</a>
+		            <a th:href="@{/relatoriosFinanceiros/cadastrar}" class="btn btn-outline-success">➕ Novo</a>
+		        </div>
+		    </div>
+		</div>
+		<div sec:authorize="hasAuthority('ROLE_ADMIN')" class="col">
+		    <div class="card shadow h-100">
+		        <div class="card-body text-center">
+		            <h4 class="card-title">📦 Estoque</h4>
+		            <p class="card-text">Controle de suprimentos e quantidades.</p>
+		            <a th:href="@{/estoque}" class="btn btn-outline-primary">📋 Abrir</a>
+		            <a th:href="@{/estoque/cadastrar}" class="btn btn-outline-success">➕ Adicionar</a>
+		        </div>
+		    </div>
+		</div>
+		<div sec:authorize="hasAuthority('ROLE_ADMIN')" class="col">
+		            <div class="card shadow h-100">
+		                <div class="card-body text-center">
+		                    <h4 class="card-title">📜 Auditoria</h4>
+		                    <p class="card-text">Histórico de ações no sistema.</p>
+		                    <a th:href="@{/auditoria}" class="btn btn-outline-primary">📋 Consultar</a>
+		                </div>
+		            </div>
+		        </div>
     </div>
 </div>
 <div id="cookieConsent" class="cookie-consent d-none">

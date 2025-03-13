@@ -59,6 +59,20 @@ public class ConsultaService {
             auditoriaService.registrarAcao("Exclusão", entidade, usuario);
         }
     }
+    
+    @Transactional
+    public void cancelarConsulta(Long id, String usuario) {
+        Optional<Consulta> consultaOpt = consultaRepository.findById(id);
+        if (consultaOpt.isPresent()) {
+            Consulta consulta = consultaOpt.get();
+            
+            consulta.setStatus("Cancelada");
+            consultaRepository.save(consulta);
+            String entidade = "Consulta";
+            auditoriaService.registrarAcao("Cancelamento Consulta: " + consulta.getPaciente().getNome(), entidade, usuario);
+        }
+    }
+
 
     public List<Map<String, Object>> buscarConsultasPorPaciente(Long pacienteId) {
         List<Object[]> resultados = consultaRepository.findConsultasByPacienteId(pacienteId);
