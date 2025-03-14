@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <th:block th:replace="~{menuNavegacao.html}"></th:block>
 <div class="container my-4">
     <h2 class="text-center mb-4">Pacientes Cadastrados</h2>
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 	<script>
 	    function confirmarExclusao(url) {
 	        Swal.fire({
@@ -28,6 +28,30 @@
 	            }
 	        });
 	    }
+	    document.addEventListener("DOMContentLoaded", function() {
+	        let erroMsg = "[[${erro}]]";
+	        let sucessoMsg = "[[${sucesso}]]";
+
+	        if (erroMsg && erroMsg.trim() !== "" && erroMsg !== "null") {
+	            Swal.fire({
+	                title: "Erro!",
+	                text: erroMsg,
+	                icon: "error",
+	                confirmButtonColor: "#d33",
+	                confirmButtonText: "OK"
+	            });
+	        }
+
+	        if (sucessoMsg && sucessoMsg.trim() !== "" && sucessoMsg !== "null") {
+	            Swal.fire({
+	                title: "Sucesso!",
+	                text: sucessoMsg,
+	                icon: "success",
+	                confirmButtonColor: "#28a745",
+	                confirmButtonText: "OK"
+	            });
+	        }
+	    });
 	</script>
     <div class="table-responsive">
         <table class="table table-striped table-bordered">
@@ -46,20 +70,28 @@
                     <td th:text="${paciente.id}"></td>
                     <td th:text="${paciente.nome}"></td>
                     <td th:text="${paciente.cpf}"></td>
-                    <td th:text="${#temporals.format(paciente.dataNascimento, 'dd/MM/yyyy')}"></td>
+					<td th:text="${#temporals.format(paciente.dataNascimento, 'dd/MM/yyyy')} + ' (' + ${paciente.idade} + ' anos)'"></td>
                     <td th:text="${paciente.telefone}"></td>
                     <td class="text-center">
-                        <a th:href="@{/prontuarios/visualizar/{id}(id=${paciente.id})}" class="btn btn-sm btn-info">📋 Prontuário</a>
-                        <a th:href="@{/pacientes/editar/{id}(id=${paciente.id})}" class="btn btn-sm btn-primary">✏️ Editar</a>
-						<a href="#" class="btn btn-sm btn-danger"
-						   th:attr="onclick=|confirmarExclusao('/pacientes/excluir/${paciente.id}')|">
-						    🗑️ Excluir
-						</a>
+                        <a th:href="@{/prontuarios/visualizar/{id}(id=${paciente.id})}" class="btn btn-sm btn-info">
+                            📋 Prontuário
+                        </a>
+                        <a th:href="@{/pacientes/editar/{id}(id=${paciente.id})}" class="btn btn-sm btn-primary">
+                            ✏️ Editar
+                        </a>
+                        <a href="#" class="btn btn-sm btn-danger"
+                           th:attr="onclick=|confirmarExclusao('/pacientes/excluir/${paciente.id}')|">
+                            🗑️ Excluir
+                        </a>
                     </td>
                 </tr>
+				<tr th:if="${#lists.isEmpty(pacientes)}">
+				    <td colspan="6" class="text-center text-muted">Nenhum paciente registrado</td>
+				</tr>
             </tbody>
         </table>
     </div>
+
     <div class="text-center mt-4">
         <a th:href="@{/pacientes/cadastrar}" class="btn btn-success me-2">➕ Novo Paciente</a>
         <a th:href="@{/}" class="btn btn-danger">🏠 Página Inicial</a>

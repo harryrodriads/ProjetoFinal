@@ -23,25 +23,25 @@
                 <th class="text-center">Ações</th>
             </tr>
             </thead>
-            <tbody>
-                <tr th:each="videochamada : ${videochamadas}">
-                    <td th:text="${videochamada.id}"></td>
-                    <td th:text="${videochamada.consulta?.id ?: '-'}"></td>
-                    <td th:text="${videochamada.consulta?.paciente?.nome ?: '-'}"></td>
-                    <td th:text="${videochamada.consulta?.profissional?.nome ?: '-'}"></td>
-					<td>
-						<a th:href="@{/videochamadas.html}">🔗 Acessar Sala</a>
-					</td>
-                    <td th:text="${videochamada.status}"></td>
-                    <td class="text-center">
-                        <a th:href="@{/videochamadas/editar/{id}(id=${videochamada.id})}" class="btn btn-sm btn-primary">✏️ Editar</a>
-                        <a href="#" class="btn btn-sm btn-danger" th:attr="data-id=${videochamada.id}" onclick="confirmarExclusao(this)">🗑️ Excluir</a>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(videochamadas)}">
-                    <td colspan="7" class="text-center text-muted">Nenhuma videochamada registrada</td>
-                </tr>
-            </tbody>
+			<tbody>
+			    <tr th:each="videochamada : ${videochamadas}" th:if="${videochamada.consulta?.paciente != null}">
+			        <td th:text="${videochamada.id}"></td>
+			        <td th:text="${videochamada.consulta?.id ?: '-'}"></td>
+			        <td th:text="${videochamada.consulta.paciente.nome}"></td>
+			        <td th:text="${videochamada.consulta?.profissional?.nome ?: '-'}"></td>
+			        <td>
+			            <a th:href="@{/videochamadas.html}">🔗 Acessar Sala</a>
+			        </td>
+			        <td th:text="${videochamada.status}"></td>
+			        <td class="text-center">
+			            <a th:href="@{/videochamadas/editar/{id}(id=${videochamada.id})}" class="btn btn-sm btn-primary">✏️ Editar</a>
+			            <a href="#" class="btn btn-sm btn-danger" th:attr="data-id=${videochamada.id}" onclick="confirmarExclusao(this)">🗑️ Excluir</a>
+			        </td>
+			    </tr>
+				<tr th:if="${#lists.isEmpty(videochamadas)}">
+				        <td colspan="7" class="text-center text-muted">Nenhuma videochamada registrada</td>
+				    </tr>
+			</tbody>
         </table>
     </div>
     <div class="text-center mt-4">

@@ -1,49 +1,70 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Cadastrar Internação</title>
+    <title>Cadastrar/Editar Internação</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <th:block th:replace="~{menuNavegacao.html}"></th:block>
-
 <div class="container my-4">
-    <h2 class="text-center mb-4">🏥 Cadastrar Internação</h2>
-    <form th:action="@{/internacoes/salvar}" th:object="${internacao}" method="post">
-		<input type="hidden" th:field="*{id}" />
+    <h2 class="text-center mb-4" th:text="${internacao.id == null} ? 'Cadastrar Internação' : 'Editar Internação'"></h2>
+    <form th:action="@{/internacoes/salvar}" th:object="${internacao}" method="post" class="mx-auto" style="max-width: 500px;">
+        <input type="hidden" th:field="*{id}" />
+		<div class="mb-3">
+		            <label for="paciente" class="form-label">Paciente:</label>
+		            <select id="paciente" name="paciente" class="form-select" th:field="*{paciente}" required>
+		                <option value="" disabled selected>Selecione um paciente</option>
+		                <option th:each="p : ${pacientes}" th:value="${p.id}" th:text="${p.nome}"></option>
+		            </select>
+		        </div>
         <div class="mb-3">
-            <label for="paciente" class="form-label">Paciente:</label>
-            <select id="paciente" name="paciente" class="form-select" th:field="*{paciente}" required>
-                <option value="" disabled selected>Selecione um paciente</option>
-                <option th:each="p : ${pacientes}" th:value="${p.id}" th:text="${p.nome}"></option>
+            <label class="form-label">Profissional:</label>
+            <select class="form-select" name="profissional" required>
+                <option value="">Selecione um profissional</option>
+                <option th:each="prof : ${profissionais}"
+                        th:value="${prof.id}"
+                        th:text="${prof.nome}"
+                        th:selected="${internacao.profissional != null and internacao.profissional.id == prof.id}">
+                </option>
             </select>
         </div>
-
         <div class="mb-3">
-            <label for="profissional" class="form-label">Profissional:</label>
-            <select id="profissional" name="profissional" class="form-select" th:field="*{profissional}" required>
-                <option value="" disabled selected>Selecione um profissional</option>
-                <option th:each="prof : ${profissionais}" th:value="${prof.id}" th:text="${prof.nome}"></option>
+            <label class="form-label">Leito:</label>
+            <select class="form-select" name="leito" required>
+                <option value="">Selecione um leito</option>
+                <option th:each="leito : ${leitos}" 
+                        th:value="${leito.id}"
+                        th:text="${'Leito ' + leito.numero}"
+                        th:selected="${internacao.leito != null and internacao.leito.id == leito.id}">
+                </option>
             </select>
         </div>
+		<div class="mb-3">
+		    <label class="form-label">Data/Hora de Entrada:</label>
+		    <input type="datetime-local" class="form-control"
+		           th:field="*{dataEntrada}"
+		           th:value="${internacao.dataEntrada != null} ? ${#temporals.format(internacao.dataEntrada, 'yyyy-MM-dd\'T\'HH:mm')} : ''"
+		           required />
+		</div>
 
-        <div class="mb-3">
-            <label for="leito" class="form-label">Leito:</label>
-            <select id="leito" name="leito" class="form-select" th:field="*{leito}" required>
-                <option value="" disabled selected>Selecione um leito</option>
-                <option th:each="l : ${leitos}" th:value="${l.id}" th:text="${l.numero}"></option>
-            </select>
-        </div>
-
-        <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success">💾 Salvar</button>
-            <a th:href="@{/internacoes}" class="btn btn-danger">❌ Cancelar</a>
+		<div class="mb-3">
+		    <label class="form-label">Data/Hora de Saída:</label>
+		    <input type="datetime-local" class="form-control"
+		           th:field="*{dataSaida}"
+		           th:value="${internacao.dataSaida != null} ? ${#temporals.format(internacao.dataSaida, 'yyyy-MM-dd\'T\'HH:mm')} : ''"
+		           />
+		</div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary px-4">💾 Salvar</button>
         </div>
     </form>
+    <div class="text-center mt-4">
+        <a class="btn btn-outline-dark me-2" th:href="@{/internacoes}">📋 Lista de Internações</a>
+        <a class="btn btn-danger" th:href="@{/}">🏠 Página Inicial</a>
+    </div>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

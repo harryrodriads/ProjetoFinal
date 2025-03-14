@@ -1,8 +1,9 @@
 package com.example.sghss.service;
-
 import com.example.sghss.model.Paciente;
+import com.example.sghss.repository.InternacaoRepository;
 import com.example.sghss.repository.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,9 @@ public class PacienteService {
 
     @Autowired
     private AuditoriaService auditoriaService;
+    
+    @Autowired
+    private InternacaoRepository internacaoRepository;
 
     public List<Paciente> listarTodos() {
         return pacienteRepository.findAll();
@@ -36,13 +40,16 @@ public class PacienteService {
         Optional<Paciente> pacienteOpt = pacienteRepository.findById(id);
 
         if (pacienteOpt.isPresent()) {
+            long qtdInternacoes = internacaoRepository.countInternacoesPorPaciente(id);
+            if (qtdInternacoes > 0) {
+                throw new DataIntegrityViolationException("Não pode excluir um paciente que tem uma Internação 'Em Andamento'.");
+            }
             Paciente paciente = pacienteOpt.get();
-            String entidade = "Paciente";
-
             pacienteRepository.deleteById(id);
-            auditoriaService.registrarAcao("Exclusão: " + paciente.getNome(), entidade, usuario);
+            auditoriaService.registrarAcao("Exclusão: " + paciente.getNome(), "Paciente", usuario);
         }
     }
+
 
     public Paciente buscarPorId(Long id) {
         return pacienteRepository.findById(id).orElse(null);

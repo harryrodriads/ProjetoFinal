@@ -31,11 +31,12 @@
             <input type="text" class="form-control" th:field="*{cpf}" id="cpf" required/>
             <div th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}" class="text-danger"></div>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Data de Nascimento:</label>
-            <input type="date" class="form-control" name="dataNascimento" 
-                   th:value="${paciente.dataNascimento != null} ? ${#temporals.format(paciente.dataNascimento, 'yyyy-MM-dd')} : ''" required />
-        </div>
+		<div class="mb-3">
+		    <label class="form-label">Data de Nascimento:</label>
+		    <input type="date" class="form-control" name="dataNascimento"
+		           th:value="${paciente.dataNascimento != null} ? ${#temporals.format(paciente.dataNascimento, 'yyyy-MM-dd')} : ''" required />
+		    <div th:if="${#fields.hasErrors('dataNascimento')}" th:errors="*{dataNascimento}" class="text-danger"></div>
+		</div>
         <div class="mb-3">
             <label class="form-label">Telefone:</label>
             <input type="text" class="form-control" th:field="*{telefone}" id="telefone" required/>

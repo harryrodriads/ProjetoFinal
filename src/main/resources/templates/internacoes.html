@@ -31,9 +31,8 @@
                     <td th:text="${internacao.profissional.nome}"></td>
                     <td th:text="${internacao.leito.numero}"></td>
                     <td th:text="${#temporals.format(internacao.dataEntrada, 'dd/MM/yyyy HH:mm')}"></td>
-                    <td th:text="${internacao.dataSaida != null} ? ${#temporals.format(internacao.dataSaida, 'dd/MM/yyyy HH:mm')} : 'Em andamento'"></td>
+					<td th:text="${#temporals.format(internacao.dataSaida, 'dd/MM/yyyy HH:mm')}"></td>
                     <td class="text-center">
-                        <a th:href="@{/internacoes/editar/{id}(id=${internacao.id})}" class="btn btn-sm btn-primary">✏️ Editar</a>
                         <a href="#" class="btn btn-sm btn-danger" th:attr="data-id=${internacao.id}" onclick="confirmarExclusao(this)">🗑️ Excluir</a>
                     </td>
                 </tr>
