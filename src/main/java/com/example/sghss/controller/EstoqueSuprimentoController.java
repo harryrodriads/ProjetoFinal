@@ -32,9 +32,11 @@ public class EstoqueSuprimentoController {
     }
 
     @PostMapping("/salvar")
-    public String salvarItem(@ModelAttribute("item") EstoqueSuprimento item) {
+    public String salvarItem(@ModelAttribute("item") EstoqueSuprimento item, Model model) {
         estoqueService.salvar(item);
-        return "redirect:/estoque";
+        model.addAttribute("successMessage", "Suprimento cadastrado com sucesso!");
+        model.addAttribute("redirectUrl", "/estoque");
+        return "mensagemSucesso";
     }
     
     @GetMapping("/excluir/{id}")

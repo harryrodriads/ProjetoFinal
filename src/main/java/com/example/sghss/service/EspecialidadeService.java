@@ -1,8 +1,6 @@
 package com.example.sghss.service;
-
 import com.example.sghss.model.Especialidade;
 import com.example.sghss.repository.EspecialidadeRepository;
-import com.example.sghss.repository.ProfissionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -13,9 +11,6 @@ public class EspecialidadeService {
 
     @Autowired
     private EspecialidadeRepository especialidadeRepository;
-    
-    @Autowired
-    private ProfissionalRepository profissionalRepository;
 
     @Autowired
     private AuditoriaService auditoriaService;

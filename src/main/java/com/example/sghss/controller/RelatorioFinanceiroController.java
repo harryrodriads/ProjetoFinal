@@ -32,9 +32,11 @@ public class RelatorioFinanceiroController {
     }
 
     @PostMapping("/salvar")
-    public String salvarRelatorio(@ModelAttribute("relatorioFinanceiro") RelatorioFinanceiro relatorio) {
+    public String salvarRelatorio(@ModelAttribute("relatorioFinanceiro") RelatorioFinanceiro relatorio, Model model) {
         relatorioService.salvar(relatorio);
-        return "redirect:/relatoriosFinanceiros";
+        model.addAttribute("successMessage", "Relatório Financeiro cadastrado com sucesso!");
+        model.addAttribute("redirectUrl", "/relatoriosFinanceiros");
+        return "mensagemSucesso";
     }
 
     @GetMapping("/verRelatorio")

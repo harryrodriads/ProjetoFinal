@@ -6,8 +6,10 @@ import com.example.sghss.service.ProfissionalService;
 import com.example.sghss.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -76,4 +78,16 @@ public class UsuarioController {
         model.addAttribute("usuarios", usuarioService.listarTodos());
         return "listarUsuarios";
     }
+    
+    @PostMapping("/admin")
+    public ResponseEntity<String> criarAdmin(@RequestBody Usuario usuario) {
+        usuario.setPerfil(Perfil.ADMIN);
+        usuario.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = authentication.getName();
+        usuarioService.salvar(usuario, usuarioLogado);
+
+        return ResponseEntity.ok("Usuário ADMIN criado com sucesso!");
+    }
+
 }
