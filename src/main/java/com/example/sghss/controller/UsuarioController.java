@@ -6,6 +6,8 @@ import com.example.sghss.service.ProfissionalService;
 import com.example.sghss.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @Controller
 @RequestMapping("/usuarios")
@@ -27,6 +30,31 @@ public class UsuarioController {
 
     @Autowired
     private ProfissionalService profissionalService;
+
+    // VERIFICAÇÃO VIA API
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<List<Usuario>> listarUsuariosApi() {
+        return ResponseEntity.ok(usuarioService.listarTodos());
+    }
+
+    @PostMapping(value = "/cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<?> cadastrarUsuarioApi(@Valid @RequestBody Usuario usuario, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+        }
+        if (usuario.getPerfil() == Perfil.ADMIN) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Não é permitido cadastrar um usuário como ADMIN.");
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String usuarioLogado = authentication.getName();
+        usuarioService.salvar(usuario, usuarioLogado);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Usuário cadastrado com sucesso!");
+    }
+
+    // FRONT-END HTML
 
     @GetMapping("/cadastrar")
     public String exibirFormCadastro(Model model) {
@@ -61,7 +89,7 @@ public class UsuarioController {
             usuario.setPaciente(pacienteService.buscarPorId(pacienteId));
         }
         
-        if (usuario.getPerfil() == Perfil.MEDICO && profissionalId != null) {
+        if (usuario.getPerfil() == Perfil.PROFISSIONAL && profissionalId != null) {
             usuario.setProfissional(profissionalService.buscarPorId(profissionalId).orElse(null));
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

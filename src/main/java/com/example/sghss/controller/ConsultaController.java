@@ -6,11 +6,17 @@ import com.example.sghss.service.ConsultaService;
 import com.example.sghss.service.PacienteService;
 import com.example.sghss.service.ProfissionalService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -29,7 +35,52 @@ public class ConsultaController {
 
     @Autowired
     private ProfissionalService profissionalService;
+
+    // VERIFICAÇÃO VIA API
     
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<List<Consulta>> listarConsultasApi() {
+        return ResponseEntity.ok(consultaService.listarTodas());
+    }
+
+    @PostMapping(value = "/cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<?> cadastrarConsultaApi(@Valid @RequestBody Consulta consulta, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+        }
+        String usuario = obterUsuarioLogado();
+        consultaService.salvar(consulta, usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(consulta);
+    }
+
+    @PutMapping(value = "/editar/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<?> editarConsultaApi(@PathVariable Long id, @Valid @RequestBody Consulta consulta, BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+        }
+        Optional<Consulta> consultaExistente = consultaService.buscarPorId(id);
+        if (consultaExistente.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Consulta não encontrada.");
+        }
+        consulta.setId(id);
+        String usuario = obterUsuarioLogado();
+        consultaService.salvar(consulta, usuario);
+        return ResponseEntity.ok(consulta);
+    }
+
+    @DeleteMapping(value = "/excluir/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<?> excluirConsultaApi(@PathVariable Long id) {
+        String usuario = obterUsuarioLogado();
+        consultaService.deletar(id, usuario);
+        return ResponseEntity.ok("Consulta excluída com sucesso.");
+    }
+
+    // FRONT-END HTML
+
     @GetMapping
     public String listarConsultas(Model model) {
         List<Consulta> lista = consultaService.listarTodas();

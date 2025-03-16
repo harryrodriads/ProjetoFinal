@@ -76,4 +76,8 @@ public class UsuarioService implements UserDetailsService {
                 .map(usuario -> passwordEncoder.matches(senhaDigitada, usuario.getPassword()))
                 .orElse(false);
     }
+    
+    public Optional<Usuario> buscarPorUsername(String username) {
+        return usuarioRepository.findByUsername(username);
+    }
 }
