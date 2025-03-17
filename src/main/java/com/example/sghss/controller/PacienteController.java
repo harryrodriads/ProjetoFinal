@@ -24,57 +24,62 @@ public class PacienteController {
     private PacienteService pacienteService;
 
     // VERIFICAÇÃO VIA API
+    
+    @RestController
+    @RequestMapping("/api/pacientes")
+    public class PacienteApiController {
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<List<Paciente>> listarPacientesApi() {
-        return ResponseEntity.ok(pacienteService.listarTodos());
-    }
-
-    @PostMapping(value = "/cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> cadastrarPacienteApi(@Valid @RequestBody Paciente paciente, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
-        }
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String usuarioLogado = authentication.getName();
-        pacienteService.salvar(paciente, usuarioLogado);
-        return ResponseEntity.status(HttpStatus.CREATED).body(paciente);
-    }
-
-    @PutMapping(value = "/editar/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> editarPacienteApi(@PathVariable Long id, @Valid @RequestBody Paciente paciente, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
-        }
-        Paciente pacienteExistente = pacienteService.buscarPorId(id);
-        if (pacienteExistente == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paciente não encontrado.");
-        }
-        paciente.setId(id);
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String usuarioLogado = authentication.getName();
-        pacienteService.salvar(paciente, usuarioLogado);
-        return ResponseEntity.ok(paciente);
-    }
-
-    @DeleteMapping(value = "/excluir/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> excluirPacienteApi(@PathVariable Long id) {
-        try {
-            Paciente paciente = pacienteService.buscarPorId(id);
-            if (paciente == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paciente não encontrado.");
-            }
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String usuario = (auth != null) ? auth.getName() : "Desconhecido";
-            pacienteService.excluir(id, usuario);
-            return ResponseEntity.ok("Paciente excluído com sucesso.");
-        } catch (DataIntegrityViolationException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Não pode excluir um paciente que tem uma Internação Em Andamento.");
-        }
+	    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<List<Paciente>> listarPacientesApi() {
+	        return ResponseEntity.ok(pacienteService.listarTodos());
+	    }
+	
+	    @PostMapping(value = "/cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<?> cadastrarPacienteApi(@Valid @RequestBody Paciente paciente, BindingResult result) {
+	        if (result.hasErrors()) {
+	            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+	        }
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        String usuarioLogado = authentication.getName();
+	        pacienteService.salvar(paciente, usuarioLogado);
+	        return ResponseEntity.status(HttpStatus.CREATED).body(paciente);
+	    }
+	
+	    @PutMapping(value = "/editar/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<?> editarPacienteApi(@PathVariable Long id, @Valid @RequestBody Paciente paciente, BindingResult result) {
+	        if (result.hasErrors()) {
+	            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+	        }
+	        Paciente pacienteExistente = pacienteService.buscarPorId(id);
+	        if (pacienteExistente == null) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paciente não encontrado.");
+	        }
+	        paciente.setId(id);
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        String usuarioLogado = authentication.getName();
+	        pacienteService.salvar(paciente, usuarioLogado);
+	        return ResponseEntity.ok(paciente);
+	    }
+	
+	    @DeleteMapping(value = "/excluir/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<?> excluirPacienteApi(@PathVariable Long id) {
+	        try {
+	            Paciente paciente = pacienteService.buscarPorId(id);
+	            if (paciente == null) {
+	                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Paciente não encontrado.");
+	            }
+	            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	            String usuario = (auth != null) ? auth.getName() : "Desconhecido";
+	            pacienteService.excluir(id, usuario);
+	            return ResponseEntity.ok("Paciente excluído com sucesso.");
+	        } catch (DataIntegrityViolationException e) {
+	            return ResponseEntity.status(HttpStatus.CONFLICT).body("Não pode excluir um paciente que tem uma Internação Em Andamento.");
+	        }
+	    }
     }
 
     // FRONT-END HTML

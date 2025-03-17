@@ -2,9 +2,12 @@ package com.example.sghss.controller;
 import com.example.sghss.model.Consulta;
 import com.example.sghss.model.Paciente;
 import com.example.sghss.model.Profissional;
+import com.example.sghss.model.Prontuario;
 import com.example.sghss.service.ConsultaService;
 import com.example.sghss.service.PacienteService;
 import com.example.sghss.service.ProfissionalService;
+import com.example.sghss.service.ProntuarioService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,48 +38,52 @@ public class ConsultaController {
 
     @Autowired
     private ProfissionalService profissionalService;
+    
+    @Autowired
+    private ProntuarioService prontuarioService;
 
     // VERIFICAÇÃO VIA API
     
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<List<Consulta>> listarConsultasApi() {
-        return ResponseEntity.ok(consultaService.listarTodas());
-    }
+    @RestController
+    @RequestMapping("/api/consultas")
+    public class ConsultaApiController {
 
-    @PostMapping(value = "/cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> cadastrarConsultaApi(@Valid @RequestBody Consulta consulta, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+        @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<List<Consulta>> listarConsultasApi() {
+            return ResponseEntity.ok(consultaService.listarTodas());
         }
-        String usuario = obterUsuarioLogado();
-        consultaService.salvar(consulta, usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(consulta);
-    }
 
-    @PutMapping(value = "/editar/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> editarConsultaApi(@PathVariable Long id, @Valid @RequestBody Consulta consulta, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+        @PostMapping(value = "/cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<?> cadastrarConsultaApi(@Valid @RequestBody Consulta consulta, BindingResult result) {
+            if (result.hasErrors()) {
+                return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+            }
+            String usuario = obterUsuarioLogado();
+            consultaService.salvar(consulta, usuario);
+            return ResponseEntity.status(HttpStatus.CREATED).body(consulta);
         }
-        Optional<Consulta> consultaExistente = consultaService.buscarPorId(id);
-        if (consultaExistente.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Consulta não encontrada.");
-        }
-        consulta.setId(id);
-        String usuario = obterUsuarioLogado();
-        consultaService.salvar(consulta, usuario);
-        return ResponseEntity.ok(consulta);
-    }
 
-    @DeleteMapping(value = "/excluir/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> excluirConsultaApi(@PathVariable Long id) {
-        String usuario = obterUsuarioLogado();
-        consultaService.deletar(id, usuario);
-        return ResponseEntity.ok("Consulta excluída com sucesso.");
+        @PutMapping(value = "/editar/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<?> editarConsultaApi(@PathVariable Long id, @Valid @RequestBody Consulta consulta, BindingResult result) {
+            if (result.hasErrors()) {
+                return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+            }
+            Optional<Consulta> consultaExistente = consultaService.buscarPorId(id);
+            if (consultaExistente.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Consulta não encontrada.");
+            }
+            consulta.setId(id);
+            String usuario = obterUsuarioLogado();
+            consultaService.salvar(consulta, usuario);
+            return ResponseEntity.ok(consulta);
+        }
+
+        @DeleteMapping(value = "/excluir/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+        public ResponseEntity<?> excluirConsultaApi(@PathVariable Long id) {
+            String usuario = obterUsuarioLogado();
+            consultaService.deletar(id, usuario);
+            return ResponseEntity.ok("Consulta excluída com sucesso.");
+        }
     }
 
     // FRONT-END HTML
@@ -140,6 +147,11 @@ public class ConsultaController {
 
         boolean isEdit = (consulta.getId() != null);
         consultaService.salvar(consulta, usuario);
+        Prontuario prontuario = prontuarioService.buscarPorPacienteId(pacienteId).orElse(new Prontuario());
+        prontuario.setPaciente(paciente);
+        prontuario.setDataAtualizacao(LocalDateTime.now());
+
+        prontuarioService.salvar(prontuario, usuario);
 
         model.addAttribute("successMessage", isEdit ? "Consulta atualizada com sucesso!" : "Consulta agendada com sucesso!");
         model.addAttribute("redirectUrl", "/consultas");

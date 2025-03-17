@@ -32,37 +32,42 @@ public class ProntuarioController {
 
     @Autowired
     private ConsultaService consultaService;
+    
+    // VERIFICAÇÃO VIA API
+    
+    @Controller
+    @RequestMapping("/api/prontuarios")
+    public class ProntuarioApiController {
 
- // VERIFICAÇÃO VIA API
-
-    @GetMapping(value = "/visualizar/{pacienteId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> visualizarProntuarioApi(@PathVariable Long pacienteId) {
-        Paciente paciente = pacienteService.buscarPorId(pacienteId);
-        if (paciente == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Paciente não encontrado."));
-        }
-
-        Optional<Prontuario> prontuarioOpt = prontuarioService.buscarPorPacienteId(pacienteId);
-        if (prontuarioOpt.isEmpty()) {
-            System.out.println("Prontuário não encontrado para o paciente com ID: " + pacienteId);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Prontuário não encontrado para o paciente."));
-        }
-
-        return ResponseEntity.ok(prontuarioOpt.get());
-    }
-
-    @PostMapping(value = "/salvar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> salvarProntuarioApi(@Valid @RequestBody Prontuario prontuario, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
-        }
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String usuarioLogado = authentication.getName();
-        prontuario.setDataAtualizacao(LocalDateTime.now());
-        prontuarioService.salvar(prontuario, usuarioLogado);
-        return ResponseEntity.ok("Prontuário atualizado com sucesso.");
+	    @GetMapping(value = "/visualizar/{pacienteId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<?> visualizarProntuarioApi(@PathVariable Long pacienteId) {
+	        Paciente paciente = pacienteService.buscarPorId(pacienteId);
+	        if (paciente == null) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Paciente não encontrado."));
+	        }
+	
+	        Optional<Prontuario> prontuarioOpt = prontuarioService.buscarPorPacienteId(pacienteId);
+	        if (prontuarioOpt.isEmpty()) {
+	            System.out.println("Prontuário não encontrado para o paciente com ID: " + pacienteId);
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Prontuário não encontrado para o paciente."));
+	        }
+	
+	        return ResponseEntity.ok(prontuarioOpt.get());
+	    }
+	
+	    @PostMapping(value = "/salvar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<?> salvarProntuarioApi(@Valid @RequestBody Prontuario prontuario, BindingResult result) {
+	        if (result.hasErrors()) {
+	            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+	        }
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        String usuarioLogado = authentication.getName();
+	        prontuario.setDataAtualizacao(LocalDateTime.now());
+	        prontuarioService.salvar(prontuario, usuarioLogado);
+	        return ResponseEntity.ok("Prontuário atualizado com sucesso.");
+	    }
     }
 
     // FRONT-END HTML
