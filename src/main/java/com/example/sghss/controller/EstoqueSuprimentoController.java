@@ -23,93 +23,98 @@ public class EstoqueSuprimentoController {
     private EstoqueSuprimentoService estoqueService;
 
     // VERIFICAÇÃO VIA API
+    
+    @Controller
+    @RequestMapping("/api/estoque")
+    public class EstoqueApiController {
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<List<EstoqueSuprimento>> listarEstoqueApi() {
-        return ResponseEntity.ok(estoqueService.listarTodos());
-    }
+	    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<List<EstoqueSuprimento>> listarEstoqueApi() {
+	        return ResponseEntity.ok(estoqueService.listarTodos());
+	    }
+	
+	    @PostMapping(value = "/cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<?> cadastrarItemApi(@Valid @RequestBody EstoqueSuprimento item, BindingResult result) {
+	        if (result.hasErrors()) {
+	            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+	        }
+	        estoqueService.salvar(item);
+	        return ResponseEntity.status(HttpStatus.CREATED).body(item);
+	    }
+	
+	    @PutMapping(value = "/editar/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<?> editarItemApi(@PathVariable Long id, @Valid @RequestBody EstoqueSuprimento item, BindingResult result) {
+	        if (result.hasErrors()) {
+	            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+	        }
+	        Optional<EstoqueSuprimento> itemExistente = estoqueService.buscarPorId(id);
+	        if (itemExistente.isEmpty()) {
+	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item não encontrado no estoque.");
+	        }
+	        item.setId(id);
+	        estoqueService.salvar(item);
+	        return ResponseEntity.ok(item);
+	    }
+	
+	    @DeleteMapping(value = "/excluir/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<?> excluirItemApi(@PathVariable Long id) {
+	        estoqueService.deletar(id);
+	        return ResponseEntity.ok("Item excluído com sucesso.");
+	    }
 
-    @PostMapping(value = "/cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> cadastrarItemApi(@Valid @RequestBody EstoqueSuprimento item, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
-        }
-        estoqueService.salvar(item);
-        return ResponseEntity.status(HttpStatus.CREATED).body(item);
-    }
-
-    @PutMapping(value = "/editar/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> editarItemApi(@PathVariable Long id, @Valid @RequestBody EstoqueSuprimento item, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
-        }
-        Optional<EstoqueSuprimento> itemExistente = estoqueService.buscarPorId(id);
-        if (itemExistente.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Item não encontrado no estoque.");
-        }
-        item.setId(id);
-        estoqueService.salvar(item);
-        return ResponseEntity.ok(item);
-    }
-
-    @DeleteMapping(value = "/excluir/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> excluirItemApi(@PathVariable Long id) {
-        estoqueService.deletar(id);
-        return ResponseEntity.ok("Item excluído com sucesso.");
-    }
-
-    // FRONT-END HTML
-
-    @GetMapping
-    public String listarEstoque(Model model) {
-        model.addAttribute("estoque", estoqueService.listarTodos());
-        return "listarEstoque";
-    }
-
-    @GetMapping("/cadastrar")
-    public String exibirFormularioCadastro(Model model) {
-        model.addAttribute("item", new EstoqueSuprimento());
-        return "cadastrarItem";
-    }
-
-    @PostMapping("/salvar")
-    public String salvarItemWeb(@Valid @ModelAttribute("item") EstoqueSuprimento item, BindingResult result, Model model) {
-        if (result.hasErrors()) {
-            model.addAttribute("errorMessage", "Corrija os erros e tente novamente!");
-            return "cadastrarItem";
-        }
-        estoqueService.salvar(item);
-        model.addAttribute("successMessage", "Suprimento cadastrado com sucesso!");
-        model.addAttribute("redirectUrl", "/estoque");
-        return "mensagemSucesso";
-    }
-
-    @GetMapping("/editar/{id}")
-    public String editarItemWeb(@PathVariable Long id, Model model) {
-        Optional<EstoqueSuprimento> itemOpt = estoqueService.buscarPorId(id);
-        if (itemOpt.isPresent()) {
-            model.addAttribute("item", itemOpt.get());
-            return "cadastrarItem";
-        }
-        return "redirect:/estoque";
-    }
-
-    @GetMapping("/excluir/{id}")
-    public String excluirItemWeb(@PathVariable Long id) {
-        estoqueService.deletar(id);
-        return "redirect:/estoque";
-    }
-
-    @GetMapping("/relatorio")
-    public String gerarRelatorioWeb(Model model) {
-        List<EstoqueSuprimento> estoque = estoqueService.listarTodos();
-        int totalQuantidade = estoque.stream().mapToInt(EstoqueSuprimento::getQuantidade).sum();
-        model.addAttribute("estoque", estoque);
-        model.addAttribute("totalQuantidade", totalQuantidade);
-        return "relatorio";
+	    // FRONT-END HTML
+	
+	    @GetMapping
+	    public String listarEstoque(Model model) {
+	        model.addAttribute("estoque", estoqueService.listarTodos());
+	        return "listarEstoque";
+	    }
+	
+	    @GetMapping("/cadastrar")
+	    public String exibirFormularioCadastro(Model model) {
+	        model.addAttribute("item", new EstoqueSuprimento());
+	        return "cadastrarItem";
+	    }
+	
+	    @PostMapping("/salvar")
+	    public String salvarItemWeb(@Valid @ModelAttribute("item") EstoqueSuprimento item, BindingResult result, Model model) {
+	        if (result.hasErrors()) {
+	            model.addAttribute("errorMessage", "Corrija os erros e tente novamente!");
+	            return "cadastrarItem";
+	        }
+	        estoqueService.salvar(item);
+	        model.addAttribute("successMessage", "Suprimento cadastrado com sucesso!");
+	        model.addAttribute("redirectUrl", "/estoque");
+	        return "mensagemSucesso";
+	    }
+	
+	    @GetMapping("/editar/{id}")
+	    public String editarItemWeb(@PathVariable Long id, Model model) {
+	        Optional<EstoqueSuprimento> itemOpt = estoqueService.buscarPorId(id);
+	        if (itemOpt.isPresent()) {
+	            model.addAttribute("item", itemOpt.get());
+	            return "cadastrarItem";
+	        }
+	        return "redirect:/estoque";
+	    }
+	
+	    @GetMapping("/excluir/{id}")
+	    public String excluirItemWeb(@PathVariable Long id) {
+	        estoqueService.deletar(id);
+	        return "redirect:/estoque";
+	    }
+	
+	    @GetMapping("/relatorio")
+	    public String gerarRelatorioWeb(Model model) {
+	        List<EstoqueSuprimento> estoque = estoqueService.listarTodos();
+	        int totalQuantidade = estoque.stream().mapToInt(EstoqueSuprimento::getQuantidade).sum();
+	        model.addAttribute("estoque", estoque);
+	        model.addAttribute("totalQuantidade", totalQuantidade);
+	        return "relatorio";
+	    }
     }
 }

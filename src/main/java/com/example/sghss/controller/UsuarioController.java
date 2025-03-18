@@ -32,90 +32,94 @@ public class UsuarioController {
     private ProfissionalService profissionalService;
 
     // VERIFICAÇÃO VIA API
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<List<Usuario>> listarUsuariosApi() {
-        return ResponseEntity.ok(usuarioService.listarTodos());
-    }
-
-    @PostMapping(value = "/cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public ResponseEntity<?> cadastrarUsuarioApi(@Valid @RequestBody Usuario usuario, BindingResult result) {
-        if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
-        }
-        if (usuario.getPerfil() == Perfil.ADMIN) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Não é permitido cadastrar um usuário como ADMIN.");
-        }
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String usuarioLogado = authentication.getName();
-        usuarioService.salvar(usuario, usuarioLogado);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Usuário cadastrado com sucesso!");
-    }
-
-    // FRONT-END HTML
-
-    @GetMapping("/cadastrar")
-    public String exibirFormCadastro(Model model) {
-        model.addAttribute("usuario", new Usuario());
-        model.addAttribute("perfis", Perfil.values());
-        model.addAttribute("pacientes", pacienteService.listarTodos());
-        model.addAttribute("profissionais", profissionalService.listarTodos());
-        return "cadastrarUsuario";
-    }
-
-    @PostMapping("/salvar")
-    public String salvarUsuario(
-        @Valid @ModelAttribute("usuario") Usuario usuario,
-        BindingResult result,
-        @RequestParam(value = "paciente", required = false) Long pacienteId,
-        @RequestParam(value = "profissional", required = false) Long profissionalId,
-        Model model
-    ) {
-        if (result.hasErrors()) {
-            model.addAttribute("perfis", Perfil.values());
-            model.addAttribute("pacientes", pacienteService.listarTodos());
-            model.addAttribute("profissionais", profissionalService.listarTodos());
-            return "cadastrarUsuario";
-        }
-        
-        if (usuario.getPerfil() == Perfil.ADMIN) {
-            model.addAttribute("errorMessage", "Não é permitido cadastrar um usuário como ADMIN.");
-            return "mensagemErro";
-        }
-
-        if (usuario.getPerfil() == Perfil.PACIENTE && pacienteId != null) {
-            usuario.setPaciente(pacienteService.buscarPorId(pacienteId));
-        }
-        
-        if (usuario.getPerfil() == Perfil.PROFISSIONAL && profissionalId != null) {
-            usuario.setProfissional(profissionalService.buscarPorId(profissionalId).orElse(null));
-        }
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String usuarioLogado = authentication.getName();
-        usuarioService.salvar(usuario, usuarioLogado);
-
-        model.addAttribute("successMessage", "Usuário cadastrado com sucesso!");
-        model.addAttribute("redirectUrl", "/usuarios");
-        return "mensagemSucesso";
-    }
-
-    @GetMapping
-    public String listarUsuarios(Model model) {
-        model.addAttribute("usuarios", usuarioService.listarTodos());
-        return "listarUsuarios";
-    }
     
-    @PostMapping("/admin")
-    public ResponseEntity<String> criarAdmin(@RequestBody Usuario usuario) {
-        usuario.setPerfil(Perfil.ADMIN);
-        usuario.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String usuarioLogado = authentication.getName();
-        usuarioService.salvar(usuario, usuarioLogado);
+    @Controller
+    @RequestMapping("/api/estoque")
+    public class UsuarioApiController {
 
-        return ResponseEntity.ok("Usuário ADMIN criado com sucesso!");
+	    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<List<Usuario>> listarUsuariosApi() {
+	        return ResponseEntity.ok(usuarioService.listarTodos());
+	    }
+	
+	    @PostMapping(value = "/cadastrar", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	    @ResponseBody
+	    public ResponseEntity<?> cadastrarUsuarioApi(@Valid @RequestBody Usuario usuario, BindingResult result) {
+	        if (result.hasErrors()) {
+	            return ResponseEntity.badRequest().body("Erro de validação: " + result.getAllErrors());
+	        }
+	        if (usuario.getPerfil() == Perfil.ADMIN) {
+	            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Não é permitido cadastrar um usuário como ADMIN.");
+	        }
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        String usuarioLogado = authentication.getName();
+	        usuarioService.salvar(usuario, usuarioLogado);
+	        return ResponseEntity.status(HttpStatus.CREATED).body("Usuário cadastrado com sucesso!");
+	    }
+	
+	    // FRONT-END HTML
+	
+	    @GetMapping("/cadastrar")
+	    public String exibirFormCadastro(Model model) {
+	        model.addAttribute("usuario", new Usuario());
+	        model.addAttribute("perfis", Perfil.values());
+	        model.addAttribute("pacientes", pacienteService.listarTodos());
+	        model.addAttribute("profissionais", profissionalService.listarTodos());
+	        return "cadastrarUsuario";
+	    }
+	
+	    @PostMapping("/salvar")
+	    public String salvarUsuario(
+	        @Valid @ModelAttribute("usuario") Usuario usuario,
+	        BindingResult result,
+	        @RequestParam(value = "paciente", required = false) Long pacienteId,
+	        @RequestParam(value = "profissional", required = false) Long profissionalId,
+	        Model model
+	    ) {
+	        if (result.hasErrors()) {
+	            model.addAttribute("perfis", Perfil.values());
+	            model.addAttribute("pacientes", pacienteService.listarTodos());
+	            model.addAttribute("profissionais", profissionalService.listarTodos());
+	            return "cadastrarUsuario";
+	        }
+	        
+	        if (usuario.getPerfil() == Perfil.ADMIN) {
+	            model.addAttribute("errorMessage", "Não é permitido cadastrar um usuário como ADMIN.");
+	            return "mensagemErro";
+	        }
+	
+	        if (usuario.getPerfil() == Perfil.PACIENTE && pacienteId != null) {
+	            usuario.setPaciente(pacienteService.buscarPorId(pacienteId));
+	        }
+	        
+	        if (usuario.getPerfil() == Perfil.PROFISSIONAL && profissionalId != null) {
+	            usuario.setProfissional(profissionalService.buscarPorId(profissionalId).orElse(null));
+	        }
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        String usuarioLogado = authentication.getName();
+	        usuarioService.salvar(usuario, usuarioLogado);
+	
+	        model.addAttribute("successMessage", "Usuário cadastrado com sucesso!");
+	        model.addAttribute("redirectUrl", "/usuarios");
+	        return "mensagemSucesso";
+	    }
+	
+	    @GetMapping
+	    public String listarUsuarios(Model model) {
+	        model.addAttribute("usuarios", usuarioService.listarTodos());
+	        return "listarUsuarios";
+	    }
+	    
+	    @PostMapping("/admin")
+	    public ResponseEntity<String> criarAdmin(@RequestBody Usuario usuario) {
+	        usuario.setPerfil(Perfil.ADMIN);
+	        usuario.setPassword(new BCryptPasswordEncoder().encode(usuario.getPassword()));
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	        String usuarioLogado = authentication.getName();
+	        usuarioService.salvar(usuario, usuarioLogado);
+	
+	        return ResponseEntity.ok("Usuário ADMIN criado com sucesso!");
+	    }
     }
-
 }
