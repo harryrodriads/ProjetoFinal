@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/videochamadas") 
+@RequestMapping("/videochamadas")
 public class VideochamadaController {
 
     @Autowired
@@ -27,7 +27,7 @@ public class VideochamadaController {
     @Autowired
     private ConsultaService consultaService;
 
-    // Rotas para o Front-end (HTML)
+    // FRONT-END HTML
 
     @GetMapping
     public String listarTodas(Model model) {
@@ -58,11 +58,8 @@ public class VideochamadaController {
             Videochamada videochamada = videochamadaOpt.get();
             model.addAttribute("videochamada", videochamada);
             model.addAttribute("consultas", consultaService.listarTodas());
-            if (videochamada.getConsulta() != null) {
-                model.addAttribute("consultaSelecionada", videochamada.getConsulta().getId());
-            } else {
-                model.addAttribute("consultaSelecionada", null);
-            }
+            model.addAttribute("consultaSelecionada", 
+                videochamada.getConsulta() != null ? videochamada.getConsulta().getId() : null);
             model.addAttribute("statusList", StatusVideo.values());
             return "cadastrarVideochamada";
         }
@@ -106,7 +103,7 @@ public class VideochamadaController {
         return "salaVideo";
     }
 
-    // Rotas para a API (JSON)
+    // VERIFICAÇÃO VIA API
 
     @RestController
     @RequestMapping("/api/videochamadas")

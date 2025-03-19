@@ -1,4 +1,6 @@
 package com.example.sghss.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -22,6 +24,7 @@ public class Profissional extends BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "especialidade_id")
+    @JsonBackReference
     private Especialidade especialidade;
 
     public Long getId() {

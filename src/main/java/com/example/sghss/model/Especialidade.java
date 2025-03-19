@@ -3,6 +3,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "especialidades")
 public class Especialidade {
@@ -17,7 +19,9 @@ public class Especialidade {
 	private String descricao;
 
 	@OneToMany(mappedBy = "especialidade", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@JsonManagedReference
 	private List<Profissional> profissionais;
+
 
     // Getters e Setters
     public Long getId() {
