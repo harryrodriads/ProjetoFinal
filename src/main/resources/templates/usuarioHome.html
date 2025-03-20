@@ -88,65 +88,6 @@
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card shadow h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title">🏨 Internações</h4>
-                    <p class="card-text">Controle de internações hospitalares.</p>
-                    <a th:href="@{/internacoes}" class="btn btn-outline-primary">📋 Listar</a>
-                    <a th:href="@{/internacoes/cadastrar}" class="btn btn-outline-success">➕ Registrar</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card shadow h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title">🛏️ Leitos</h4>
-                    <p class="card-text">Gerenciamento de leitos hospitalares.</p>
-                    <a th:href="@{/leitos}" class="btn btn-outline-primary">📋 Listar</a>
-                    <a th:href="@{/leitos/cadastrar}" class="btn btn-outline-success">➕ Adicionar</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card shadow h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title">🎥 Videochamadas</h4>
-                    <p class="card-text">Gerencie consultas por videochamada.</p>
-                    <a th:href="@{/videochamadas}" class="btn btn-outline-primary">📋 Listar</a>
-                    <a th:href="@{/videochamadas/cadastrar}" class="btn btn-outline-success">➕ Agendar</a>
-                </div>
-            </div>
-        </div>
-		<div sec:authorize="hasAuthority('ROLE_ADMIN')" class="col">
-		    <div class="card shadow h-100">
-		        <div class="card-body text-center">
-		            <h4 class="card-title">💰 Relatórios Financeiros</h4>
-		            <p class="card-text">Gere e visualize relatórios financeiros.</p>
-		            <a th:href="@{/relatoriosFinanceiros}" class="btn btn-outline-primary">📋 Abrir</a>
-		            <a th:href="@{/relatoriosFinanceiros/cadastrar}" class="btn btn-outline-success">➕ Novo</a>
-		        </div>
-		    </div>
-		</div>
-		<div sec:authorize="hasAuthority('ROLE_ADMIN')" class="col">
-		    <div class="card shadow h-100">
-		        <div class="card-body text-center">
-		            <h4 class="card-title">📦 Estoque</h4>
-		            <p class="card-text">Controle de suprimentos e quantidades.</p>
-		            <a th:href="@{/estoque}" class="btn btn-outline-primary">📋 Abrir</a>
-		            <a th:href="@{/estoque/cadastrar}" class="btn btn-outline-success">➕ Adicionar</a>
-		        </div>
-		    </div>
-		</div>
-		<div sec:authorize="hasAuthority('ROLE_ADMIN')" class="col">
-		            <div class="card shadow h-100">
-		                <div class="card-body text-center">
-		                    <h4 class="card-title">📜 Auditoria</h4>
-		                    <p class="card-text">Histórico de ações no sistema.</p>
-		                    <a th:href="@{/auditoria}" class="btn btn-outline-primary">📋 Consultar</a>
-		                </div>
-		            </div>
-		        </div>
     </div>
 </div>
 <div id="cookieConsent" class="cookie-consent d-none">
