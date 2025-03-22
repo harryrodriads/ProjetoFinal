@@ -16,31 +16,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="pacientesDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        👤 Pacientes
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" th:href="@{/pacientes}">📋 Listar Pacientes</a></li>
-                        <li><a class="dropdown-item" th:href="@{/pacientes/cadastrar}">➕ Cadastrar Paciente</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="profissionaisDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        👨‍⚕️ Profissionais
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" th:href="@{/profissionais}">📋 Listar Profissionais</a></li>
-                        <li><a class="dropdown-item" th:href="@{/profissionais/cadastrar}">➕ Cadastrar Profissional</a></li>
-                    </ul>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/auditoria}">📜 Auditoria</a>
-                </li>
 				<li class="nav-item d-flex align-items-center">
 				    <span class="text-white fw-bold me-2">
 				        <span th:text="${#strings.toUpperCase(#authentication.name)}"></span>

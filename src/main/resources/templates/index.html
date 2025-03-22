@@ -1,175 +1,285 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-	<head>
-	    <title>SGHSS - Página Inicial</title>
-	    <meta charset="UTF-8">
-	    <meta name="viewport" content="width=device-width, initial-scale=1">
-	    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-	    <style>
-	        body {
-	            display: flex;
-	            flex-direction: column;
-	            min-height: 100vh;
-	        }
-	        .container {
-	            flex: 1;
-	        }
-	        .cookie-consent {
-	            position: fixed;
-	            bottom: 0;
-	            left: 0;
-	            width: 100%;
-	            background: rgba(255, 255, 255, 0.95);
-	            border-top: 1px solid #ddd;
-	            padding: 10px 15px;
-	            text-align: center;
-	            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
-	        }
-			footer {
-			            text-align: center;
-			            margin-top: 40px;
-			            padding: 10px;
-			            background: #f1f1f1;
-			            font-size: 14px;
-			            border-radius: 5px;
-			        }
-	    </style>
-	</head>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>SGHSS - Página Inicial</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            flex: 1;
+        }
+        .cookie-consent {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-top: 1px solid #ddd;
+            padding: 10px 15px;
+            text-align: center;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 10px;
+            background: #f1f1f1;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
 <body>
 <th:block th:replace="~{menuNavegacao.html}"></th:block>
-<div class="container my-5">
-    <div class="d-flex align-items-center mb-4">
-        <img src="/capa.jpg" alt="SGHSS Gestão Hospitalar" style="width: 550px; height: auto;" class="rounded shadow me-3">
-        <div>
-			<h1 class="fw-bold mb-2 text-center">
-			    🏥 Bem-vindo ao SGHSS, <span class="fw-bold text-dark" th:text="${#strings.capitalize(#authentication.name)}"></span>!
-			</h1>
-            <p class="lead mb-0 text-center">Sistema de Gestão Hospitalar e de Serviços de Saúde</p>
+<div sec:authorize="hasAnyRole('ADMIN', 'PROFISSIONAL')">
+    <div class="container my-5">
+        <div class="d-flex align-items-center mb-4">
+            <img src="/capa.jpg" alt="SGHSS Gestão Hospitalar" style="width: 550px; height: auto;" class="rounded shadow me-3">
+            <div>
+                <h1 class="fw-bold mb-2 text-center">
+                    🏥 Bem-vindo ao SGHSS, <span class="fw-bold text-dark" th:text="${#strings.capitalize(#authentication.name)}"></span>!
+                </h1>
+                <p class="lead mb-0 text-center">Sistema de Gestão Hospitalar e de Serviços de Saúde</p>
+            </div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+			<div sec:authorize="hasAnyRole('ADMIN', 'PROFISSIONAL')" class="col">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">👤 Pacientes</h4>
+                        <p class="card-text">Gerencie os pacientes cadastrados no sistema.</p>
+                        <a th:href="@{/pacientes}" class="btn btn-outline-primary">📋 Listar</a>
+                        <a th:href="@{/pacientes/cadastrar}" class="btn btn-outline-success">➕ Cadastrar</a>
+                    </div>
+                </div>
+            </div>
+			<div sec:authorize="hasAnyRole('ADMIN', 'PROFISSIONAL')" class="col">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">📅 Consultas</h4>
+                        <p class="card-text">Agende, edite ou cancele consultas médicas.</p>
+                        <a th:href="@{/consultas}" class="btn btn-outline-primary">📋 Listar</a>
+                        <a th:href="@{/consultas/cadastrar}" class="btn btn-outline-success">➕ Agendar</a>
+                    </div>
+                </div>
+            </div>
+			<div sec:authorize="hasAnyRole('ADMIN', 'PROFISSIONAL')" class="col">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">👨‍⚕️ Profissionais</h4>
+                        <p class="card-text">Visualize e gerencie os profissionais da saúde.</p>
+                        <a th:href="@{/profissionais}" class="btn btn-outline-primary">📋 Listar</a>
+                        <a th:href="@{/profissionais/cadastrar}" class="btn btn-outline-success">➕ Cadastrar</a>
+                    </div>
+                </div>
+            </div>
+			<div sec:authorize="hasAnyRole('ADMIN', 'PROFISSIONAL')" class="col">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">🏥 Especialidades</h4>
+                        <p class="card-text">Gerencie as especialidades médicas.</p>
+                        <a th:href="@{/especialidades}" class="btn btn-outline-primary">📋 Listar</a>
+                        <a th:href="@{/especialidades/cadastrar}" class="btn btn-outline-success">➕ Cadastrar</a>
+                    </div>
+                </div>
+            </div>
+			<div sec:authorize="hasAnyRole('ADMIN', 'PROFISSIONAL')" class="col">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">🏨 Internações</h4>
+                        <p class="card-text">Controle de internações hospitalares.</p>
+                        <a th:href="@{/internacoes}" class="btn btn-outline-primary">📋 Listar</a>
+                        <a th:href="@{/internacoes/cadastrar}" class="btn btn-outline-success">➕ Registrar</a>
+                    </div>
+                </div>
+            </div>
+			<div sec:authorize="hasAnyRole('ADMIN', 'PROFISSIONAL')" class="col">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">🛏️ Leitos</h4>
+                        <p class="card-text">Gerenciamento de leitos hospitalares.</p>
+                        <a th:href="@{/leitos}" class="btn btn-outline-primary">📋 Listar</a>
+                        <a th:href="@{/leitos/cadastrar}" class="btn btn-outline-success">➕ Adicionar</a>
+                    </div>
+                </div>
+            </div>
+			<div sec:authorize="hasAnyRole('ADMIN', 'PROFISSIONAL')" class="col">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">🎥 Videochamadas</h4>
+                        <p class="card-text">Gerencie consultas por videochamada.</p>
+                        <a th:href="@{/videochamadas}" class="btn btn-outline-primary">📋 Listar</a>
+                        <a th:href="@{/videochamadas/cadastrar}" class="btn btn-outline-success">➕ Agendar</a>
+                    </div>
+                </div>
+            </div>
+            <div sec:authorize="hasRole('ADMIN')" class="col">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">💰 Relatórios Financeiros</h4>
+                        <p class="card-text">Gere e visualize relatórios financeiros.</p>
+                        <a th:href="@{/relatoriosFinanceiros}" class="btn btn-outline-primary">📋 Abrir</a>
+                        <a th:href="@{/relatoriosFinanceiros/cadastrar}" class="btn btn-outline-success">➕ Novo</a>
+                    </div>
+                </div>
+            </div>
+            <div sec:authorize="hasRole('ADMIN')" class="col">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">📦 Estoque</h4>
+                        <p class="card-text">Controle de suprimentos e quantidades.</p>
+                        <a th:href="@{/estoque}" class="btn btn-outline-primary">📋 Abrir</a>
+                        <a th:href="@{/estoque/cadastrar}" class="btn btn-outline-success">➕ Adicionar</a>
+                    </div>
+                </div>
+            </div>
+            <div sec:authorize="hasRole('ADMIN')" class="col">
+                <div class="card shadow h-100">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">📜 Auditoria</h4>
+                        <p class="card-text">Histórico de ações no sistema.</p>
+                        <a th:href="@{/auditoria}" class="btn btn-outline-primary">📋 Consultar</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-        <div class="col">
-            <div class="card shadow h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title">👤 Pacientes</h4>
-                    <p class="card-text">Gerencie os pacientes cadastrados no sistema.</p>
-                    <a th:href="@{/pacientes}" class="btn btn-outline-primary">📋 Listar</a>
-                    <a th:href="@{/pacientes/cadastrar}" class="btn btn-outline-success">➕ Cadastrar</a>
+</div>
+<div sec:authorize="hasRole('PACIENTE')">
+    <div class="container my-4">
+        <h2 class="text-center mb-4">🩺 Portal do Paciente</h2>
+		<p class="text-muted text-center">
+		                    <small>📅 Última atualização:
+		                        <span th:text="${#temporals.format(#temporals.createNow(), 'dd/MM/yyyy HH:mm')}"></span>
+		                    </small>
+		                </p>
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white fw-bold text-center">📋 Meu Prontuário</div>
+            <div class="card-body">
+                <p><strong>📜 Histórico Médico:</strong> 
+                    <span th:text="${prontuario != null && prontuario.historicoMedico != null ? prontuario.historicoMedico : 'Não informado'}"></span>
+                </p>
+                <p><strong>📌 Observações:</strong> 
+                    <span th:text="${prontuario != null && prontuario.observacoes != null ? prontuario.observacoes : 'Não informado'}"></span>
+                </p>
+                <p><strong>🔎 Diagnóstico:</strong> 
+                    <span th:text="${prontuario != null && prontuario.diagnostico != null ? prontuario.diagnostico : 'Não informado'}"></span>
+                </p>
+                <p><strong>💊 Tratamento:</strong> 
+                    <span th:text="${prontuario != null && prontuario.tratamento != null ? prontuario.tratamento : 'Não informado'}"></span>
+                </p>
+                <p><strong>📝 Prescrição:</strong> 
+                    <span th:text="${prontuario != null && prontuario.prescricao != null ? prontuario.prescricao : 'Não informado'}"></span>
+                </p>
+                <p><strong>🔬 Exames:</strong> 
+                    <span th:text="${prontuario != null && prontuario.exames != null ? prontuario.exames : 'Não informado'}"></span>
+                </p>
+            </div>
+        </div>
+        <div class="card shadow mb-4">
+            <div class="card-header bg-success text-white fw-bold text-center">📅 Minhas Consultas </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="text-center">ID</th>
+                                <th class="text-center">Data</th>
+                                <th class="text-center">Hora</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Paciente</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="c : ${consultas}">
+                                <td class="text-center" th:text="${c.id}"></td>
+                                <td class="text-center" th:text="${c.dataHora != null ? #temporals.format(c.dataHora, 'dd/MM/yyyy') : '---'}"></td>
+                                <td class="text-center" th:text="${c.dataHora != null ? #temporals.format(c.dataHora, 'HH:mm') : '---'}"></td>
+                                <td class="text-center" th:text="${c.status ?: '---'}"></td>
+                                <td class="text-center" th:text="${c.paciente != null ? c.paciente.nome : '---'}"></td>
+                                <td class="text-center">
+                                    <a th:href="@{/consultas/detalhar/{id}(id=${c.id})}" class="btn btn-sm btn-outline-primary">🔍 Detalhar</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(consultas)}">
+                                <td colspan="6" class="text-center text-muted">Nenhuma consulta agendada.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card shadow h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title">📅 Consultas</h4>
-                    <p class="card-text">Agende, edite ou cancele consultas médicas.</p>
-                    <a th:href="@{/consultas}" class="btn btn-outline-primary">📋 Listar</a>
-                    <a th:href="@{/consultas/cadastrar}" class="btn btn-outline-success">➕ Agendar</a>
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white fw-bold text-center">🎥 Videochamadas Agendadas</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="text-center">ID</th>
+                                <th class="text-center">Consulta</th>
+                                <th class="text-center">Paciente</th>
+                                <th class="text-center">Profissional</th>
+                                <th class="text-center">URL da Sala</th>
+                                <th class="text-center">Status</th>
+                                <th class="text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="v : ${videochamadas}">
+                                <td class="text-center" th:text="${v.id}"></td>
+                                <td class="text-center" th:text="${v.consulta != null ? v.consulta.id : '---'}"></td>
+                                <td class="text-center" th:text="${v.consulta?.paciente?.nome ?: '---'}"></td>
+                                <td class="text-center" th:text="${v.consulta?.profissional?.nome ?: '---'}"></td>
+                                <td class="text-center">
+                                    <a th:if="${v.urlSala != null}" th:href="${v.urlSala}" class="btn btn-sm btn-outline-primary" target="_blank">🔗 Acessar</a>
+                                    <span th:if="${v.urlSala == null}" class="text-muted">--- </span>
+                                </td>
+                                <td class="text-center" th:text="${v.status ?: '---'}"></td>
+                                <td class="text-center">
+                                    <a th:href="@{/videochamadas/detalhar/{id}(id=${v.id})}" class="btn btn-sm btn-outline-secondary">🔍 Detalhar</a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(videochamadas)}">
+                                <td colspan="7" class="text-center text-muted">Nenhuma videochamada disponível.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card shadow h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title">👨‍⚕️ Profissionais</h4>
-                    <p class="card-text">Visualize e gerencie os profissionais da saúde.</p>
-                    <a th:href="@{/profissionais}" class="btn btn-outline-primary">📋 Listar</a>
-                    <a th:href="@{/profissionais/cadastrar}" class="btn btn-outline-success">➕ Cadastrar</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card shadow h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title">🏥 Especialidades</h4>
-                    <p class="card-text">Gerencie as especialidades médicas.</p>
-                    <a th:href="@{/especialidades}" class="btn btn-outline-primary">📋 Listar</a>
-                    <a th:href="@{/especialidades/cadastrar}" class="btn btn-outline-success">➕ Cadastrar</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card shadow h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title">🏨 Internações</h4>
-                    <p class="card-text">Controle de internações hospitalares.</p>
-                    <a th:href="@{/internacoes}" class="btn btn-outline-primary">📋 Listar</a>
-                    <a th:href="@{/internacoes/cadastrar}" class="btn btn-outline-success">➕ Registrar</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card shadow h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title">🛏️ Leitos</h4>
-                    <p class="card-text">Gerenciamento de leitos hospitalares.</p>
-                    <a th:href="@{/leitos}" class="btn btn-outline-primary">📋 Listar</a>
-                    <a th:href="@{/leitos/cadastrar}" class="btn btn-outline-success">➕ Adicionar</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-            <div class="card shadow h-100">
-                <div class="card-body text-center">
-                    <h4 class="card-title">🎥 Videochamadas</h4>
-                    <p class="card-text">Gerencie consultas por videochamada.</p>
-                    <a th:href="@{/videochamadas}" class="btn btn-outline-primary">📋 Listar</a>
-                    <a th:href="@{/videochamadas/cadastrar}" class="btn btn-outline-success">➕ Agendar</a>
-                </div>
-            </div>
-        </div>
-		<div sec:authorize="hasAuthority('ROLE_ADMIN')" class="col">
-		    <div class="card shadow h-100">
-		        <div class="card-body text-center">
-		            <h4 class="card-title">💰 Relatórios Financeiros</h4>
-		            <p class="card-text">Gere e visualize relatórios financeiros.</p>
-		            <a th:href="@{/relatoriosFinanceiros}" class="btn btn-outline-primary">📋 Abrir</a>
-		            <a th:href="@{/relatoriosFinanceiros/cadastrar}" class="btn btn-outline-success">➕ Novo</a>
-		        </div>
-		    </div>
-		</div>
-		<div sec:authorize="hasAuthority('ROLE_ADMIN')" class="col">
-		    <div class="card shadow h-100">
-		        <div class="card-body text-center">
-		            <h4 class="card-title">📦 Estoque</h4>
-		            <p class="card-text">Controle de suprimentos e quantidades.</p>
-		            <a th:href="@{/estoque}" class="btn btn-outline-primary">📋 Abrir</a>
-		            <a th:href="@{/estoque/cadastrar}" class="btn btn-outline-success">➕ Adicionar</a>
-		        </div>
-		    </div>
-		</div>
-		<div sec:authorize="hasAuthority('ROLE_ADMIN')" class="col">
-		            <div class="card shadow h-100">
-		                <div class="card-body text-center">
-		                    <h4 class="card-title">📜 Auditoria</h4>
-		                    <p class="card-text">Histórico de ações no sistema.</p>
-		                    <a th:href="@{/auditoria}" class="btn btn-outline-primary">📋 Consultar</a>
-		                </div>
-		            </div>
-		        </div>
     </div>
 </div>
 <div id="cookieConsent" class="cookie-consent d-none">
-    🔒 Este site utiliza cookies para melhorar sua experiência. 
+    🔒 Este site utiliza cookies para melhorar sua experiência.
     <a href="/privacidade.html" class="text-primary">Saiba mais</a>.
     <button class="btn btn-success ms-3" onclick="aceitarCookies()">Aceitar</button>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
     function aceitarCookies() {
         document.cookie = "cookiesAceitos=true; path=/; max-age=" + (60 * 60 * 24 * 30);
         document.getElementById("cookieConsent").classList.add("d-none");
     }
 
-    window.onload = function() {
+    window.onload = function () {
         if (!document.cookie.includes("cookiesAceitos=true")) {
             document.getElementById("cookieConsent").classList.remove("d-none");
         }
     };
 </script>
 <footer>
-    © 2025 SGHSS - Todos os direitos reservados. 
-	<a href="/privacidade.html">Privacidade</a>
+    © 2025 SGHSS - Todos os direitos reservados.
+    <a href="/privacidade.html">Privacidade</a>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
