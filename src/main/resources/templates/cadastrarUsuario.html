@@ -5,68 +5,124 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <th:block th:replace="~{menuNavegacao.html}"></th:block>
-
 <div class="container my-4">
     <h2 class="text-center mb-4">👤 Cadastrar Usuário</h2>
-
+	<script th:if="${errorMessage}">
+	    Swal.fire({
+	        icon: 'error',
+	        title: 'Erro!',
+	        text: '[[${errorMessage}]]',
+	        timer: 2500,
+	        showConfirmButton: false
+	    });
+	</script>
     <form th:action="@{/usuarios/salvar}" th:object="${usuario}" method="post" class="mx-auto" style="max-width: 500px;">
+        <div class="mb-3">
+            <label class="form-label">Nome Completo:</label>
+            <input type="text" class="form-control" th:field="*{nome}" required />
+            <div th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}" class="text-danger"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">CPF:</label>
+            <input type="text" class="form-control" th:field="*{cpf}" id="cpf" placeholder="000.000.000-00" required />
+            <div th:if="${#fields.hasErrors('cpf')}" th:errors="*{cpf}" class="text-danger"></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Data de Nascimento:</label>
+            <input type="date" class="form-control" th:field="*{dataNascimento}" required />
+            <div th:if="${#fields.hasErrors('dataNascimento')}" th:errors="*{dataNascimento}" class="text-danger"></div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Telefone:</label>
+            <input type="text" class="form-control" th:field="*{telefone}" id="telefone" placeholder="(99) 99999-9999" required />
+            <div th:if="${#fields.hasErrors('telefone')}" th:errors="*{telefone}" class="text-danger"></div>
+        </div>
         <div class="mb-3">
             <label class="form-label">Nome de Usuário:</label>
             <input type="text" class="form-control" th:field="*{username}" required />
             <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger"></div>
         </div>
-
         <div class="mb-3">
             <label class="form-label">Senha:</label>
             <input type="password" class="form-control" th:field="*{password}" required />
             <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="text-danger"></div>
         </div>
-
-		<div class="mb-3">
-		    <label class="form-label">Perfil:</label>
-		    <select class="form-select" th:field="*{perfil}" required>
-			    <option value="">Selecione o perfil</option>
-			    <option th:each="p : ${perfis}" th:if="${p.name() != 'ADMIN'}" th:value="${p}" th:text="${p}"></option>
-			</select>
-		    <div th:if="${#fields.hasErrors('perfil')}" th:errors="*{perfil}" class="text-danger"></div>
-		</div>
-
-
-		<div class="mb-3" th:if="${usuario.perfil != null and usuario.perfil.name() == 'PACIENTE'}">
-		    <label class="form-label">Vincular a um Paciente:</label>
-		    <select class="form-select" th:field="*{paciente}">
-		        <option value="">Nenhum</option>
-		        <option th:each="pac : ${pacientes}" th:value="${pac.id}" th:text="${pac.nome}"></option>
-		    </select>
-		</div>
-
-		<div class="mb-3" th:if="${usuario.perfil != null and usuario.perfil.name() == 'MEDICO'}">
-		    <label class="form-label">Vincular a um Profissional:</label>
-		    <select class="form-select" th:field="*{profissional}">
-		        <option value="">Nenhum</option>
-		        <option th:each="prof : ${profissionais}" th:value="${prof.id}" th:text="${prof.nome}"></option>
-		    </select>
-		</div>
-
-
+        <div class="mb-3">
+            <label class="form-label">Perfil:</label>
+            <select class="form-select" th:field="*{perfil}" required>
+                <option value="">Selecione o perfil</option>
+                <option th:each="p : ${perfis}" th:value="${p}" th:text="${p}"></option>
+            </select>
+            <div th:if="${#fields.hasErrors('perfil')}" th:errors="*{perfil}" class="text-danger"></div><br>
+			<div class="mb-3" id="adminPasswordField" style="display: none;">
+						    <label class="form-label">🔒 Authenticator:</label>
+							<input type="password" class="form-control" id="adminSecurityPassword" name="adminKey" placeholder="Digite a senha de segurança">
+						    <div id="adminPasswordError" class="text-danger mt-1" style="display: none;">Senha incorreta para cadastro de administrador.</div>
+						</div>
+        </div>
+        <div class="mb-3" th:if="${usuario.perfil?.name() == 'PACIENTE'}">
+            <label class="form-label">Vincular a um Paciente:</label>
+            <select class="form-select" th:field="*{paciente}">
+                <option value="">Nenhum</option>
+                <option th:each="pac : ${pacientes}" th:value="${pac.id}" th:text="${pac.nome}"></option>
+            </select>
+        </div>
+        <div class="mb-3" th:if="${usuario.perfil?.name() == 'MEDICO'}">
+            <label class="form-label">Vincular a um Profissional:</label>
+            <select class="form-select" th:field="*{profissional}">
+                <option value="">Nenhum</option>
+                <option th:each="prof : ${profissionais}" th:value="${prof.id}" th:text="${prof.nome}"></option>
+            </select>
+        </div>
         <div class="text-center">
             <button type="submit" class="btn btn-primary px-4">💾 Cadastrar</button>
+			<a class="btn btn-danger" th:href="@{/}">🏠 Voltar</a>
         </div>
     </form>
-
-    <div class="text-center mt-4">
-        <a class="btn btn-outline-dark me-2" th:href="@{/usuarios}">
-            📋 Lista de Usuários
-        </a>
-        <a class="btn btn-danger" th:href="@{/}">
-            🏠 Página Inicial
-        </a>
-    </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script>
+    const perfilSelect = document.querySelector('[name="perfil"]');
+    const adminField = document.getElementById("adminPasswordField");
+    const form = document.querySelector("form");
+    const adminInput = document.getElementById("adminSecurityPassword");
+    const errorDiv = document.getElementById("adminPasswordError");
 
+    perfilSelect.addEventListener("change", function () {
+        if (this.value === "ADMIN") {
+            adminField.style.display = "block";
+        } else {
+            adminField.style.display = "none";
+            errorDiv.style.display = "none";
+            adminInput.value = "";
+        }
+    });
+
+    form.addEventListener("submit", function (e) {
+        if (perfilSelect.value === "ADMIN") {
+            if (adminInput.value !== "0000") {
+                e.preventDefault();
+                errorDiv.style.display = "block";
+                adminInput.classList.add("is-invalid");
+            } else {
+                errorDiv.style.display = "none";
+                adminInput.classList.remove("is-invalid");
+            }
+        }
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#cpf').mask('000.000.000-00', { reverse: false });
+        $('#telefone').mask('(00) 00000-0000');
+    });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

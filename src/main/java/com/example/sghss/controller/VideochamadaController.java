@@ -1,19 +1,31 @@
 package com.example.sghss.controller;
+import com.example.sghss.model.Consulta;
+import com.example.sghss.model.Paciente;
+import com.example.sghss.model.Profissional;
 import com.example.sghss.model.StatusVideo;
+import com.example.sghss.model.Usuario;
 import com.example.sghss.model.Videochamada;
 import com.example.sghss.service.ConsultaService;
+import com.example.sghss.service.ProfissionalService;
+import com.example.sghss.service.UsuarioService;
 import com.example.sghss.service.VideochamadaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +38,12 @@ public class VideochamadaController {
 
     @Autowired
     private ConsultaService consultaService;
+    
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private ProfissionalService profissionalService;
 
     // FRONT-END HTML
 
@@ -101,6 +119,64 @@ public class VideochamadaController {
     @GetMapping("/salaVideo")
     public String salaVideo() {
         return "salaVideo";
+    }
+    
+    @GetMapping("/paciente/agendar")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String exibirFormularioAgendamentoVideochamada(Model model, Principal principal) {
+        String username = principal.getName();
+        Usuario usuario = usuarioService.buscarPorUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        Paciente paciente = usuario.getPaciente();
+
+        Videochamada videochamada = new Videochamada();
+        Consulta consulta = new Consulta();
+        consulta.setPaciente(paciente);
+        videochamada.setConsulta(consulta);
+
+        model.addAttribute("videochamada", videochamada);
+        model.addAttribute("profissionais", profissionalService.listarTodos());
+
+        return "videochamadaPaciente";
+    }
+
+    
+    @PostMapping("/paciente/salvar")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String salvarVideochamada(
+            @ModelAttribute("videochamada") Videochamada videochamada,
+            @RequestParam("dataStr") String dataStr,
+            @RequestParam("horaStr") String horaStr,
+            @RequestParam("consulta.profissional") Long profissionalId,
+            Principal principal,
+            Model model
+    ) {
+        String username = principal.getName();
+        Usuario usuario = usuarioService.buscarPorUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        Paciente paciente = usuario.getPaciente();
+        Profissional profissional = profissionalService.buscarPorId(profissionalId)
+                .orElseThrow(() -> new RuntimeException("Profissional não encontrado"));
+
+        Consulta consulta = new Consulta();
+        consulta.setDataHora(LocalDateTime.of(LocalDate.parse(dataStr), LocalTime.parse(horaStr)));
+        consulta.setPaciente(paciente);
+        consulta.setProfissional(profissional);
+        consulta.setStatus("Agendada");
+
+        consultaService.salvar(consulta, username);
+
+        videochamada.setConsulta(consulta);
+        videochamada.setStatus(StatusVideo.AGENDADA);
+
+        videochamadaService.salvar(videochamada, username);
+
+        model.addAttribute("successMessage", "Videochamada agendada com sucesso!");
+        model.addAttribute("redirectUrl", "/");
+
+        return "mensagemSucesso";
     }
 
     // VERIFICAÇÃO VIA API

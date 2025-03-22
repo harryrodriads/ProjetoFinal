@@ -16,6 +16,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 
 @Controller
@@ -71,6 +73,8 @@ public class UsuarioController {
         BindingResult result,
         @RequestParam(value = "paciente", required = false) Long pacienteId,
         @RequestParam(value = "profissional", required = false) Long profissionalId,
+        @RequestParam(value = "adminKey", required = false) String adminKey,
+        RedirectAttributes redirectAttributes,
         Model model
     ) {
         if (result.hasErrors()) {
@@ -79,19 +83,20 @@ public class UsuarioController {
             model.addAttribute("profissionais", profissionalService.listarTodos());
             return "cadastrarUsuario";
         }
-        
-        if (usuario.getPerfil() == Perfil.ADMIN) {
-            model.addAttribute("errorMessage", "Não é permitido cadastrar um usuário como ADMIN.");
-            return "mensagemErro";
+
+        if (usuario.getPerfil() == Perfil.ADMIN && !"0000".equals(adminKey)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Senha de segurança do ADMIN incorreta!");
+            return "redirect:/usuarios/cadastrar";
         }
 
         if (usuario.getPerfil() == Perfil.PACIENTE && pacienteId != null) {
             usuario.setPaciente(pacienteService.buscarPorId(pacienteId));
         }
-        
+
         if (usuario.getPerfil() == Perfil.PROFISSIONAL && profissionalId != null) {
             usuario.setProfissional(profissionalService.buscarPorId(profissionalId).orElse(null));
         }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usuarioLogado = authentication.getName();
         usuarioService.salvar(usuario, usuarioLogado);

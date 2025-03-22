@@ -50,6 +50,11 @@ public class PacienteService {
         }
     }
 
+    public Paciente buscarPorUsuario(String username) {
+        return pacienteRepository.findByUsuarioUsername(username)
+            .orElseThrow(() -> new RuntimeException("Paciente não encontrado para o usuário: " + username));
+    }
+
 
     public Paciente buscarPorId(Long id) {
         return pacienteRepository.findById(id).orElse(null);

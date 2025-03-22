@@ -10,7 +10,6 @@
 <th:block th:replace="~{menuNavegacao.html}"></th:block>
 <div class="container my-4">
     <h2 class="text-center mb-4" th:text="${consulta.id == null} ? 'Agendar Consulta' : 'Editar Consulta'"></h2>
-
     <form th:action="@{/consultas/salvar}" th:object="${consulta}" method="post" class="mx-auto" style="max-width: 500px;">
         <input type="hidden" th:field="*{id}" />
         <div class="mb-3">
@@ -52,7 +51,6 @@
 			        <input type="time" class="form-control" name="horaStr" required />
 			    </div>
 			</div>
-
         <div class="mb-3">
             <label class="form-label">Status:</label>
             <select class="form-select" name="status" required>

@@ -12,6 +12,9 @@ public class AuditoriaService {
     private AuditoriaRepository auditoriaRepository;
 
     public void registrarAcao(String acao, String entidade, String usuario) {
+        if (usuario == null || usuario.isBlank()) {
+            usuario = "Sistema";
+        }
         Auditoria auditoria = new Auditoria(acao, entidade, usuario);
         auditoriaRepository.save(auditoria);
     }

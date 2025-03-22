@@ -70,4 +70,8 @@ public class VideochamadaService {
             auditoriaService.registrarAcao("Exclusão: " + nomePaciente, entidade, usuario);
         }
     }
+    
+    public List<Videochamada> buscarPorPacienteId(Long pacienteId) {
+        return videochamadaRepository.findByConsultaPacienteId(pacienteId);
+    }
 }

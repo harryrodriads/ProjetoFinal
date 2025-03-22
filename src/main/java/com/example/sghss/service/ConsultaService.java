@@ -90,4 +90,8 @@ public class ConsultaService {
 
         return consultas;
     }
+    
+    public List<Consulta> buscarPorPacienteId(Long pacienteId) {
+        return consultaRepository.findByPacienteIdOrderByDataHora(pacienteId);
+    }
 }

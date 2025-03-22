@@ -1,11 +1,10 @@
 package com.example.sghss.model;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -14,12 +13,9 @@ import java.util.Collections;
 @Table(name = "usuarios")
 public class Usuario implements UserDetails {
 
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -37,6 +33,31 @@ public class Usuario implements UserDetails {
     @NotNull(message = "O perfil do usuário é obrigatório")
     private Perfil perfil;
 
+    // 📌 Novos campos replicando validações de Paciente
+
+    @Column(nullable = false)
+    @NotBlank(message = "O nome é obrigatório")
+    @Size(min = 3, max = 100, message = "O nome deve ter entre 3 e 100 caracteres")
+    private String nome;
+
+    @Column(unique = true, nullable = false)
+    @NotBlank(message = "CPF é obrigatório")
+    @Pattern(
+        regexp = "^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$",
+        message = "Formato de CPF inválido!"
+    )
+    private String cpf;
+
+    @Past(message = "A data de nascimento deve ser anterior ao dia de hoje.")
+    private LocalDate dataNascimento;
+
+    @NotBlank(message = "O telefone é obrigatório")
+    @Pattern(
+        regexp = "\\(\\d{2}\\) \\d{4,5}-\\d{4}",
+        message = "Formato de telefone inválido!"
+    )
+    private String telefone;
+
     @OneToOne
     @JoinColumn(name = "paciente_id", nullable = true)
     private Paciente paciente;
@@ -44,7 +65,6 @@ public class Usuario implements UserDetails {
     @OneToOne
     @JoinColumn(name = "profissional_id", nullable = true)
     private Profissional profissional;
-
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -69,6 +89,8 @@ public class Usuario implements UserDetails {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
+    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -135,6 +157,42 @@ public class Usuario implements UserDetails {
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    // Novos Getters e Setters dos campos do "Paciente"
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public LocalDate getDataNascimento() {
+        return dataNascimento;
+    }
+
+    public void setDataNascimento(LocalDate dataNascimento) {
+        this.dataNascimento = dataNascimento;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
+    }
+
+    // Segurança - Spring Security
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

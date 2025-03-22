@@ -45,7 +45,7 @@ public class UsuarioService implements UserDetailsService {
     public Usuario salvar(Usuario usuario, String usuarioLogado) {
         boolean isNovoUsuario = usuario.getId() == null;
 
-        if (!usuario.getPassword().startsWith("$2a$")) { 
+        if (!usuario.getPassword().startsWith("$2a$")) {
             usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
         }
 
@@ -53,11 +53,13 @@ public class UsuarioService implements UserDetailsService {
 
         String acao = isNovoUsuario ? "Cadastro: " + usuarioSalvo.getUsername() : "Edição: " + usuarioSalvo.getUsername();
         String entidade = "Usuário";
+        String autor = ("anonymousUser".equals(usuarioLogado) || usuarioLogado == null) ? "SYSTEM" : usuarioLogado;
 
-        auditoriaService.registrarAcao(acao, entidade, usuarioLogado);
+        auditoriaService.registrarAcao(acao, entidade, autor);
 
         return usuarioSalvo;
     }
+
 
     public void deletar(Long id, String usuarioLogado) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findById(id);

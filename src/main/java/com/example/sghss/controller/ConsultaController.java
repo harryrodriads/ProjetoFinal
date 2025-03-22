@@ -3,23 +3,28 @@ import com.example.sghss.model.Consulta;
 import com.example.sghss.model.Paciente;
 import com.example.sghss.model.Profissional;
 import com.example.sghss.model.Prontuario;
+import com.example.sghss.model.Usuario;
 import com.example.sghss.service.ConsultaService;
 import com.example.sghss.service.PacienteService;
 import com.example.sghss.service.ProfissionalService;
 import com.example.sghss.service.ProntuarioService;
-
+import com.example.sghss.service.UsuarioService;
+import com.example.sghss.service.VideochamadaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import jakarta.validation.Valid;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import jakarta.validation.Valid;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -41,6 +46,12 @@ public class ConsultaController {
     
     @Autowired
     private ProntuarioService prontuarioService;
+    
+    @Autowired
+    private UsuarioService usuarioService;
+    
+    @Autowired
+    private VideochamadaService videochamadaService;
 
     // VERIFICAÇÃO VIA API
     
@@ -152,7 +163,6 @@ public class ConsultaController {
         prontuario.setDataAtualizacao(LocalDateTime.now());
 
         prontuarioService.salvar(prontuario, usuario);
-
         model.addAttribute("successMessage", isEdit ? "Consulta atualizada com sucesso!" : "Consulta agendada com sucesso!");
         model.addAttribute("redirectUrl", "/consultas");
         return "mensagemSucesso";
@@ -196,6 +206,17 @@ public class ConsultaController {
         return "redirect:/consultas";
     }
     
+    @GetMapping("/paciente/cancelar/{id}")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String cancelarConsultaComoPaciente(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        String usuario = obterUsuarioLogado();
+        consultaService.cancelarConsulta(id, usuario);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Consulta cancelada com sucesso.");
+        return "redirect:/";
+    }
+
+    
     private String obterUsuarioLogado() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
@@ -203,5 +224,113 @@ public class ConsultaController {
         }
         return "Desconhecido";
     }
+    
+    @GetMapping("/paciente/agendar-consulta")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String exibirFormularioConsultaComCadastro(Model model, Principal principal) {
+        String username = principal.getName();
+        Usuario usuario = usuarioService.buscarPorUsername(username)
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + username));
+
+        Paciente paciente = usuario.getPaciente();
+
+        if (paciente == null) {
+            paciente = new Paciente();
+            paciente.setNome(usuario.getNome());
+            paciente.setCpf(usuario.getCpf());
+            paciente.setTelefone(usuario.getTelefone());
+            paciente.setDataNascimento(usuario.getDataNascimento());
+
+            paciente = pacienteService.salvar(paciente, username);
+
+            usuario.setPaciente(paciente);
+            usuarioService.salvar(usuario, username);
+        }
+
+        Consulta consulta = new Consulta();
+        consulta.setPaciente(paciente);
+
+        model.addAttribute("consulta", consulta);
+        model.addAttribute("profissionais", profissionalService.listarTodos());
+
+        return "formAgendamentoComCadastro";
+    }
+
+
+    
+    @PostMapping("/paciente/salvar-agendamento")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String salvarAgendamentoComCadastro(
+            @ModelAttribute("consulta") Consulta consulta,
+            @RequestParam("dataStr") String dataStr,
+            @RequestParam("horaStr") String horaStr,
+            @RequestParam("profissional") Long profissionalId,
+            Model model,
+            Principal principal
+    ) {
+        String username = principal.getName();
+        Usuario usuario = usuarioService.buscarPorUsername(username)
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado: " + username));
+        Paciente pacienteSalvo = usuario.getPaciente();
+
+        if (pacienteSalvo == null) {
+            model.addAttribute("errorMessage", "Erro: Paciente não vinculado ao usuário.");
+            return "mensagemErro";
+        }
+
+        consulta.setPaciente(pacienteSalvo);
+        consulta.setDataHora(LocalDateTime.of(LocalDate.parse(dataStr), LocalTime.parse(horaStr)));
+        consulta.setStatus("Agendada");
+
+        Optional<Profissional> profissionalOpt = profissionalService.buscarPorId(profissionalId);
+        if (profissionalOpt.isEmpty()) {
+            model.addAttribute("errorMessage", "Erro: Profissional não encontrado.");
+            return "mensagemErro";
+        }
+
+        consulta.setProfissional(profissionalOpt.get());
+
+        boolean isEdit = (consulta.getId() != null);
+        consultaService.salvar(consulta, username);
+
+        Prontuario prontuario = prontuarioService.buscarPorPacienteId(pacienteSalvo.getId())
+            .orElse(new Prontuario());
+        prontuario.setPaciente(pacienteSalvo);
+        prontuario.setDataAtualizacao(LocalDateTime.now());
+        prontuarioService.salvar(prontuario, username);
+
+        model.addAttribute("successMessage", isEdit ? "Consulta atualizada com sucesso!" : "Consulta agendada com sucesso!");
+        model.addAttribute("redirectUrl", "/");
+        return "mensagemSucesso";
+    }
+    
+    @GetMapping("/paciente/index")
+    @PreAuthorize("hasRole('PACIENTE')")
+    public String exibirPortalPaciente(Model model, Principal principal) {
+        String username = principal.getName();
+
+        Usuario usuario = usuarioService.buscarPorUsername(username)
+            .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        Paciente paciente = usuario.getPaciente();
+        if (paciente == null) {
+            throw new RuntimeException("Paciente não vinculado ao usuário.");
+        }
+
+        List<Consulta> consultas = consultaService.buscarPorPacienteId(paciente.getId());
+
+        model.addAttribute("consultas", consultas);
+        model.addAttribute("prontuario", prontuarioService.buscarPorPacienteId(paciente.getId()).orElse(null));
+        model.addAttribute("videochamadas", videochamadaService.buscarPorPacienteId(paciente.getId()));
+
+        System.out.println("Consultas encontradas: " + consultas.size());
+        for (Consulta c : consultas) {
+            System.out.println("Consulta: ID=" + c.getId() + " | Data=" + c.getDataHora());
+        }
+
+        return "paciente/index";
+    }
+    
+    
 
 }

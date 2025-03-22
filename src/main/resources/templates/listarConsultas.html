@@ -31,9 +31,15 @@
                     <td class="text-center" th:text="${consulta.paciente != null ? consulta.paciente.nome : 'Sem Paciente'}"></td>
 					<td class="text-center">
 					    <a th:href="@{/consultas/editar/{id}(id=${consulta.id})}" class="btn btn-sm btn-primary">✏️ Editar</a>
-					    <button class="btn btn-sm btn-warning" th:attr="data-id=${consulta.id}"
-					            onclick="confirmarCancelamento(this)">❌ Cancelar
-					    </button>
+						<th:block th:if="${consulta.status != 'Cancelada'}">
+						    <button class="btn btn-sm btn-warning"
+						            th:attr="data-id=${consulta.id}"
+						            onclick="confirmarCancelamento(this)">❌ Cancelar
+						    </button>
+						</th:block>
+						<th:block th:if="${consulta.status == 'Cancelada'}">
+						    <span class="badge bg-secondary">❌ Cancelada</span>
+						</th:block>
 					</td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(consultas)}">

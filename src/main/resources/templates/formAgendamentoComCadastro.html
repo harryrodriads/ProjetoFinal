@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Agendar Consulta</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<th:block th:replace="~{menuNavegacao.html}"></th:block>
+
+<div class="container my-4">
+    <h2 class="text-center mb-4">🩺 Agendamento de Consulta</h2>
+	<form th:action="@{/consultas/paciente/salvar-agendamento}" method="post"
+	      th:object="${consulta}" class="mx-auto" style="max-width: 600px;">
+        <input type="hidden" th:field="*{id}" />
+        <div class="mb-3">
+            <label class="form-label">Profissional:</label>
+            <select class="form-select" name="profissional" id="profissionalSelect" required>
+                <option value="">Selecione um profissional</option>
+                <option th:each="prof : ${profissionais}"
+                        th:value="${prof.id}"
+                        th:text="${prof.nome}"
+                        th:attr="data-especialidade=${prof.especialidade != null ? prof.especialidade.nome : 'Sem Especialidade'}"
+                        th:selected="${consulta.profissional != null and consulta.profissional.id == prof.id}">
+                </option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Especialidade:</label>
+            <input type="text" id="especialidadeField" class="form-control" readonly
+                   th:value="${consulta.profissional != null && consulta.profissional.especialidade != null ? consulta.profissional.especialidade.nome : ''}" />
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Data:</label>
+                <input type="date" class="form-control" name="dataStr" required/>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Hora:</label>
+                <input type="time" class="form-control" name="horaStr" required/>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success px-4">💾 Agendar Consulta</button>
+        </div>
+    </form>
+    <div class="text-center mt-4">
+        <a class="btn btn-outline-secondary" th:href="@{/}">🏠 Voltar ao Portal do Paciente</a>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const profissionalSelect = document.getElementById("profissionalSelect");
+        const especialidadeField = document.getElementById("especialidadeField");
+
+        profissionalSelect.addEventListener("change", function () {
+            const selectedOption = profissionalSelect.options[profissionalSelect.selectedIndex];
+            const especialidade = selectedOption.getAttribute("data-especialidade") || "Sem Especialidade";
+            especialidadeField.value = especialidade;
+        });
+
+        if (profissionalSelect.value) {
+            const selectedOption = profissionalSelect.options[profissionalSelect.selectedIndex];
+            especialidadeField.value = selectedOption.getAttribute("data-especialidade") || "Sem Especialidade";
+        }
+    });
+</script>
+</body>
+</html>

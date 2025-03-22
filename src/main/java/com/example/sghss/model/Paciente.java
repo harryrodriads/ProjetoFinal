@@ -40,6 +40,11 @@ public class Paciente extends BaseEntity{
     
     @OneToMany(mappedBy = "paciente", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Consulta> consultas;
+    
+    @OneToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
+
 
     public Paciente() {
     }
