@@ -118,7 +118,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/prontuarios/visualizar/21",
+							"raw": "http://localhost:8080/api/prontuarios/visualizar/23",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -128,7 +128,7 @@
 								"api",
 								"prontuarios",
 								"visualizar",
-								"21"
+								"23"
 							]
 						}
 					},
@@ -617,28 +617,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "excluir",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/leitos/excluir/11",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"leitos",
-								"excluir",
-								"11"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -949,6 +927,40 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "12345678",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

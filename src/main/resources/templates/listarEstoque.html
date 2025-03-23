@@ -11,24 +11,6 @@
 <th:block th:replace="~{menuNavegacao.html}"></th:block>
 <div class="container my-4">
     <h2 class="text-center mb-4">📦 Estoque de Suprimentos</h2>
-    <script>
-        function confirmarExclusao(url) {
-            Swal.fire({
-                title: "Tem certeza?",
-                text: "Deseja excluir este item de estoque?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#d33",
-                cancelButtonColor: "#3085d6",
-                confirmButtonText: "Sim, excluir!",
-                cancelButtonText: "Cancelar"
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = url;
-                }
-            });
-        }
-    </script>
     <div class="table-responsive">
         <table class="table table-striped table-bordered">
             <thead class="table-dark">
@@ -48,7 +30,7 @@
                     <td class="text-center" th:text="${#temporals.format(item.dataAtualizacao, 'dd/MM/yyyy HH:mm')}"></td>
                     <td class="text-center">
                         <a th:href="@{/estoque/editar/{id}(id=${item.id})}" class="btn btn-sm btn-primary">✏️ Editar</a>
-                        <a href="#" class="btn btn-sm btn-danger" th:attr="onclick=|confirmarExclusao('/estoque/excluir/${item.id}')|"> 🗑️ Excluir</a>
+						<a href="#" class="btn btn-sm btn-danger" th:attr="data-id=${item.id}" onclick="confirmarExclusao(this)">🗑️ Excluir</a>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(estoque)}">
@@ -59,12 +41,58 @@
     </div>
     <div class="text-center mt-4">
         <a th:href="@{/estoque/cadastrar}" class="btn btn-success me-2">➕ Adicionar Item</a>
-        <a th:href="@{/}" class="btn btn-danger">🏠 Página Inicial</a>
+		<a th:href="@{/estoque/relatorio}" class="btn btn-outline-primary">📄 Ver Relatório Completo</a>
     </div>
     <div class="text-center mt-4">
-        <a th:href="@{/estoque/relatorio}" class="btn btn-outline-primary">📄 Gerar Relatório</a>
+        <a th:href="@{/}" class="btn btn-danger">🏠 Página Inicial</a>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function confirmarExclusao(element) {
+        let itemId = element.getAttribute("data-id");
+        let url = `/estoque/excluir/${itemId}`;
+
+        Swal.fire({
+            title: "Tem certeza?",
+            text: "Deseja excluir este item de estoque?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sim, excluir!",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        let erroMsg = "[[${erro}]]";
+        let sucessoMsg = "[[${sucesso}]]";
+
+        if (erroMsg && erroMsg.trim() !== "" && erroMsg !== "null") {
+            Swal.fire({
+                title: "Erro!",
+                text: erroMsg,
+                icon: "error",
+                confirmButtonColor: "#d33",
+                confirmButtonText: "OK"
+            });
+        }
+
+        if (sucessoMsg && sucessoMsg.trim() !== "" && sucessoMsg !== "null") {
+            Swal.fire({
+                title: "Sucesso!",
+                text: sucessoMsg,
+                icon: "success",
+                confirmButtonColor: "#28a745",
+                confirmButtonText: "OK"
+            });
+        }
+    });
+</script>
 </body>
 </html>

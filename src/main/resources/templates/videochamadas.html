@@ -54,6 +54,7 @@
     function confirmarExclusao(element) {
         let videochamadaId = element.getAttribute("data-id");
         let url = `/videochamadas/excluir/${videochamadaId}`;
+        
         Swal.fire({
             title: "Tem certeza?",
             text: "Deseja excluir esta videochamada?",
@@ -69,6 +70,31 @@
             }
         });
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        let erroMsg = "[[${erro}]]";
+        let sucessoMsg = "[[${sucesso}]]";
+
+        if (erroMsg && erroMsg.trim() !== "" && erroMsg !== "null") {
+            Swal.fire({
+                title: "Erro!",
+                text: erroMsg,
+                icon: "error",
+                confirmButtonColor: "#d33",
+                confirmButtonText: "OK"
+            });
+        }
+
+        if (sucessoMsg && sucessoMsg.trim() !== "" && sucessoMsg !== "null") {
+            Swal.fire({
+                title: "Sucesso!",
+                text: sucessoMsg,
+                icon: "success",
+                confirmButtonColor: "#28a745",
+                confirmButtonText: "OK"
+            });
+        }
+    });
 </script>
 </body>
 </html>

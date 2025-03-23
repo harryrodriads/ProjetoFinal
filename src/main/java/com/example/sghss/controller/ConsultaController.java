@@ -88,13 +88,6 @@ public class ConsultaController {
             consultaService.salvar(consulta, usuario);
             return ResponseEntity.ok(consulta);
         }
-
-        @DeleteMapping(value = "/excluir/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-        public ResponseEntity<?> excluirConsultaApi(@PathVariable Long id) {
-            String usuario = obterUsuarioLogado();
-            consultaService.deletar(id, usuario);
-            return ResponseEntity.ok("Consulta excluída com sucesso.");
-        }
     }
 
     // FRONT-END HTML
@@ -181,24 +174,6 @@ public class ConsultaController {
         return "cadastrarConsulta";
     }
 
-    @GetMapping("/excluir/{id}")
-    public String excluirConsulta(@PathVariable Long id) {
-    	String usuario = obterUsuarioLogado();
-    	consultaService.deletar(id, usuario);
-        return "redirect:/consultas";
-    }
-    
-    @GetMapping("/visualizar/{id}")
-    public String visualizarProntuario(@PathVariable Long id, Model model) {
-        Paciente paciente = pacienteService.buscarPorId(id);
-        if (paciente == null) {
-            return "redirect:/pacientes";
-        }
-
-        model.addAttribute("paciente", paciente);
-        return "visualizarProntuario";
-    }
-    
     @GetMapping("/cancelar/{id}")
     public String cancelarConsulta(@PathVariable Long id) {
         String usuario = obterUsuarioLogado();
@@ -330,7 +305,4 @@ public class ConsultaController {
 
         return "paciente/index";
     }
-    
-    
-
 }

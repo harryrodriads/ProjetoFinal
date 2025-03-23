@@ -157,23 +157,28 @@
 			    <div class="card-body" id="tabelaConsultas" style="display: none;">
                         <table class="table table-striped table-bordered">
                             <thead class="table-dark">
-                                <tr><th class="text-center">ID</th><th class="text-center">Data</th><th class="text-center">Hora</th><th class="text-center">Status</th><th class="text-center">Paciente</th><th class="text-center">Ações</th></tr>
+                                <tr><th class="text-center">ID</th><th class="text-center">Data</th><th class="text-center">Hora</th><th class="text-center">Status</th><th class="text-center">Médico</th><th class="text-center">Ações</th></tr>
                             </thead>
-                            <tbody>
-                                <tr th:each="c : ${consultas}">
-                                    <td class="text-center" th:text="${c.id}"></td>
-                                    <td class="text-center" th:text="${c.dataHora != null ? #temporals.format(c.dataHora, 'dd/MM/yyyy') : '---'}"></td>
-                                    <td class="text-center" th:text="${c.dataHora != null ? #temporals.format(c.dataHora, 'HH:mm') : '---'}"></td>
-                                    <td class="text-center" th:text="${c.status ?: '---'}"></td>
-                                    <td class="text-center" th:text="${c.paciente != null ? c.paciente.nome : '---'}"></td>
-                                    <td class="text-center">
-                                        <form th:action="@{/consultas/cancelar/{id}(id=${c.id})}" method="post" th:id="'form-cancelar-' + ${c.id}"></form>
-                                        <button class="btn btn-sm btn-warning" th:if="${c.status != 'Cancelada'}" th:attr="data-id=${c.id}" onclick="cancelarConsultaPaciente(this)">❌ Cancelar</button>
-                                        <span class="badge bg-secondary" th:if="${c.status == 'Cancelada'}">❌ Cancelada</span>
-                                    </td>
-                                </tr>
-                                <tr th:if="${#lists.isEmpty(consultas)}"><td colspan="6" class="text-center text-muted">Nenhuma consulta agendada.</td></tr>
-                            </tbody>
+							<tbody>
+							    <tr th:each="c : ${consultas}">
+							        <td class="text-center" th:text="${c.id}"></td>
+							        <td class="text-center" th:text="${c.dataHora != null ? #temporals.format(c.dataHora, 'dd/MM/yyyy') : '---'}"></td>
+							        <td class="text-center" th:text="${c.dataHora != null ? #temporals.format(c.dataHora, 'HH:mm') : '---'}"></td>
+							        <td class="text-center" th:text="${c.status ?: '---'}"></td>
+							        <td class="text-center" th:text="${c.profissional != null ? c.profissional.nome : '---'}">---</td>
+							        <td class="text-center">
+							            <form th:action="@{/consultas/cancelar/{id}(id=${c.id})}" method="post" th:id="'form-cancelar-' + ${c.id}"></form>
+							            <button class="btn btn-sm btn-warning" th:if="${c.status != 'Cancelada'}"
+							                    th:attr="data-id=${c.id}" onclick="cancelarConsultaPaciente(this)">
+							                ❌ Cancelar
+							            </button>
+							            <span class="badge bg-secondary" th:if="${c.status == 'Cancelada'}">❌ Cancelada</span>
+							        </td>
+							    </tr>
+							    <tr th:if="${#lists.isEmpty(consultas)}">
+							        <td colspan="6" class="text-center text-muted">Nenhuma consulta agendada.</td>
+							    </tr>
+							</tbody>
                         </table>
                         <div class="text-center mb-3"><a th:href="@{/consultas/paciente/agendar-consulta}" class="btn btn-success">➕ Agendar</a></div>
                     </div>
@@ -198,7 +203,7 @@
                                     <td class="text-center" th:text="${v.consulta?.profissional?.nome ?: '---'}"></td>
                                     <td class="text-center" th:text="${v.consulta?.dataHora != null ? #temporals.format(v.consulta.dataHora, 'dd/MM/yyyy') : '---'}"></td>
                                     <td class="text-center" th:text="${v.consulta?.dataHora != null ? #temporals.format(v.consulta.dataHora, 'HH:mm') : '---'}"></td>
-                                    <td class="text-center"><a th:if="${v.urlSala != null}" th:href="@{/videochamadas.html}" class="btn btn-sm btn-outline-primary" target="_blank">🔗 Acessar</a><span th:if="${v.urlSala == null}" class="text-muted">--- </span></td>
+                                    <td class="text-center"><a th:if="${v.urlSala != null}" th:href="@{/videochamadas.html}" class="btn btn-sm btn-outline-primary">🔗 Acessar</a><span th:if="${v.urlSala == null}" class="text-muted">--- </span></td>
                                     <td class="text-center" th:text="${v.status ?: '---'}"></td>
                                 </tr>
                                 <tr th:if="${#lists.isEmpty(videochamadas)}"><td colspan="8" class="text-center text-muted">Nenhuma videochamada disponível.</td></tr>

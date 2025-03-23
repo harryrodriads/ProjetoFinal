@@ -35,7 +35,7 @@
                     <td class="text-center fw-bold text-danger" th:text="'R$ ' + ${relatorio.despesa}"></td>
                     <td class="text-center fw-bold text-primary" th:text="'R$ ' + (${relatorio.entrada - relatorio.despesa})"></td>
                     <td class="text-center">
-                        <a href="#" class="btn btn-sm btn-danger" th:attr="onclick=|confirmarExclusao('/relatoriosFinanceiros/excluir/${relatorio.id}')|">🗑️ Excluir</a>
+						<a href="#" class="btn btn-sm btn-danger" th:attr="data-id=${relatorio.id}" onclick="confirmarExclusao(this)">🗑️ Excluir</a>
                     </td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(relatorios)}">
@@ -46,10 +46,10 @@
     </div>
     <div class="text-center mt-4">
         <a th:href="@{/relatoriosFinanceiros/cadastrar}" class="btn btn-success">➕ Novo Relatório</a>
-		<a th:href="@{/}" class="btn btn-danger">🏠 Página Inicial</a>
+		<a th:href="@{/relatoriosFinanceiros/verRelatorio}" class="btn btn-outline-primary">📄 Ver Relatório Completo</a>		
     </div>
 	<div class="text-center mt-4">
-		<a th:href="@{/relatoriosFinanceiros/verRelatorio}" class="btn btn-outline-primary">📄 Gerar Relatório</a>
+		<a th:href="@{/}" class="btn btn-danger">🏠 Página Inicial</a>
 	</div>
 </div>
 <script>
@@ -69,6 +69,50 @@
             }
         });
     }
+</script>
+<script>
+    function confirmarExclusao(element) {
+        let relatorioId = element.getAttribute("data-id");
+        let url = `/relatoriosFinanceiros/excluir/${relatorioId}`;
+        Swal.fire({
+            title: "Tem certeza?",
+            text: "Deseja excluir este relatório financeiro?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sim, excluir!",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = url;
+            }
+        });
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        let erroMsg = "[[${erro}]]";
+        let sucessoMsg = "[[${sucesso}]]";
+
+        if (erroMsg && erroMsg.trim() !== "" && erroMsg !== "null") {
+            Swal.fire({
+                title: "Erro!",
+                text: erroMsg,
+                icon: "error",
+                confirmButtonColor: "#d33",
+                confirmButtonText: "OK"
+            });
+        }
+
+        if (sucessoMsg && sucessoMsg.trim() !== "" && sucessoMsg !== "null") {
+            Swal.fire({
+                title: "Sucesso!",
+                text: sucessoMsg,
+                icon: "success",
+                confirmButtonColor: "#28a745",
+                confirmButtonText: "OK"
+            });
+        }
+    });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

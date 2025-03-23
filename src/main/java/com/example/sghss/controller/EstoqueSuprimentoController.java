@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -60,10 +62,16 @@ public class EstoqueSuprimentoController {
     }
 
     @GetMapping("/excluir/{id}")
-    public String excluirItemWeb(@PathVariable Long id) {
-        estoqueService.deletar(id);
+    public String excluirItemWeb(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            estoqueService.deletar(id);
+            redirectAttributes.addFlashAttribute("sucesso", "Item de estoque excluído com sucesso!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao excluir o item de estoque.");
+        }
         return "redirect:/estoque";
     }
+
 
     @GetMapping("/relatorio")
     public String gerarRelatorioWeb(Model model) {

@@ -15,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -83,11 +85,18 @@ public class InternacaoController {
 	}
 
 	@GetMapping("/excluir/{id}")
-	public String excluirInternacaoWeb(@PathVariable Long id) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String usuarioLogado = authentication.getName();
-		internacaoService.deletar(id, usuarioLogado);
-		return "redirect:/internacoes";
+	public String excluirInternacaoWeb(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+	    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	    String usuarioLogado = authentication.getName();
+
+	    try {
+	        internacaoService.deletar(id, usuarioLogado);
+	        redirectAttributes.addFlashAttribute("sucesso", "Internação excluída com sucesso.");
+	    } catch (Exception e) {
+	        redirectAttributes.addFlashAttribute("erro", "Erro ao excluir internação: " + e.getMessage());
+	    }
+
+	    return "redirect:/internacoes";
 	}
 
 	// VERIFICAÇÃO VIA API

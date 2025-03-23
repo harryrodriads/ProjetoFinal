@@ -63,13 +63,6 @@ public class LeitoController {
         return "redirect:/leitos";
     }
     
-    @GetMapping("/excluir/{id}")
-    public String excluirLeitoWeb(@PathVariable Long id) {
-        String usuario = obterUsuarioLogado();
-        leitoService.deletar(id, usuario);
-        return "redirect:/leitos";
-    }
-    
     private String obterUsuarioLogado() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
@@ -112,13 +105,6 @@ public class LeitoController {
             String usuario = obterUsuarioLogado();
             leitoService.salvar(leito, usuario);
             return ResponseEntity.ok(leito);
-        }
-    
-        @DeleteMapping(value = "/excluir/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-        public ResponseEntity<?> excluirLeitoApi(@PathVariable Long id) {
-            String usuario = obterUsuarioLogado();
-            leitoService.deletar(id, usuario);
-            return ResponseEntity.ok("Leito excluído com sucesso.");
         }
     }
 }

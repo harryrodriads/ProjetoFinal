@@ -83,11 +83,11 @@ public class RelatorioFinanceiroController {
     public String excluirRelatorio(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
             relatorioService.deletar(id);
-            redirectAttributes.addFlashAttribute("successMessage", "Relatório financeiro excluído com sucesso!");
+            redirectAttributes.addFlashAttribute("sucesso", "Relatório financeiro excluído com sucesso!");
         } catch (DataIntegrityViolationException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Não é possível excluir um relatório que está em uso.");
+            redirectAttributes.addFlashAttribute("erro", "Não é possível excluir um relatório que está em uso.");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Erro ao excluir o relatório financeiro.");
+            redirectAttributes.addFlashAttribute("erro", "Erro ao excluir o relatório financeiro.");
         }
         return "redirect:/relatoriosFinanceiros";
     }

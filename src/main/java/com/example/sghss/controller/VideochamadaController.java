@@ -21,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.time.LocalDate;
@@ -109,12 +110,20 @@ public class VideochamadaController {
     }
 
     @GetMapping("/excluir/{id}")
-    public String excluir(@PathVariable Long id) {
+    public String excluir(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String usuarioLogado = authentication.getName();
-        videochamadaService.deletar(id, usuarioLogado);
+
+        try {
+            videochamadaService.deletar(id, usuarioLogado);
+            redirectAttributes.addFlashAttribute("sucesso", "Videochamada excluída com sucesso.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("erro", "Erro ao excluir videochamada: " + e.getMessage());
+        }
+
         return "redirect:/videochamadas";
     }
+
 
     @GetMapping("/salaVideo")
     public String salaVideo() {

@@ -33,7 +33,6 @@ public class Usuario implements UserDetails {
     @NotNull(message = "O perfil do usuário é obrigatório")
     private Perfil perfil;
 
-    // 📌 Novos campos replicando validações de Paciente
 
     @Column(nullable = false)
     @NotBlank(message = "O nome é obrigatório")
@@ -89,8 +88,6 @@ public class Usuario implements UserDetails {
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-    // Getters e Setters
 
     public Long getId() {
         return id;
@@ -158,8 +155,6 @@ public class Usuario implements UserDetails {
         this.updatedAt = updatedAt;
     }
 
-    // Novos Getters e Setters dos campos do "Paciente"
-
     public String getNome() {
         return nome;
     }
@@ -191,8 +186,6 @@ public class Usuario implements UserDetails {
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
-
-    // Segurança - Spring Security
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
