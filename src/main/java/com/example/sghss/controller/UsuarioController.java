@@ -35,7 +35,7 @@ public class UsuarioController {
 
     // VERIFICAÇÃO VIA API
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public ResponseEntity<List<Usuario>> listarUsuariosApi() {
         return ResponseEntity.ok(usuarioService.listarTodos());

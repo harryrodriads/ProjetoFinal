@@ -2,13 +2,17 @@ package com.example.sghss.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @MappedSuperclass
 public abstract class BaseEntity {
 
     @Column(nullable = false, updatable = false)
+    @JsonIgnore
     private LocalDateTime createdAt;
 
     @Column(nullable = false)
+    @JsonIgnore
     private LocalDateTime updatedAt;
 
     @PrePersist

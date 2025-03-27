@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "6d5040b2-4c33-439d-9a4e-f420f83a3da1",
+		"_postman_id": "32e3a1ec-8321-466f-9613-c5f60d6f34ab",
 		"name": "ProjetoSGHSS",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "31257262"
+		"_exporter_id": "31257262",
+		"_collection_link": "https://www.postman.com/orbital-module-geoscientist-83088867/workspace/projetofinal/collection/31257262-32e3a1ec-8321-466f-9613-c5f60d6f34ab?action=share&source=collection_link&creator=31257262"
 	},
 	"item": [
 		{
@@ -16,7 +17,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"nome\": \"teste 3\",\r\n    \"cpf\": \"001.855.657-00\",\r\n    \"dataNascimento\": \"1988-01-02\",\r\n    \"telefone\": \"(32) 55555-0000\"\r\n}",
+							"raw": "{\r\n    \"nome\": \"Harry Rodrigues Canedo\",\r\n    \"cpf\": \"001.855.657-25\",\r\n    \"dataNascimento\": \"1994-02-04\",\r\n    \"telefone\": \"(34) 98423-6956\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -66,7 +67,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "    {\r\n        \"createdAt\": \"2025-03-14T22:15:44\",\r\n        \"updatedAt\": \"2025-03-15T22:47:22\",\r\n        \"id\": 16,\r\n        \"nome\": \"teste 1\",\r\n        \"cpf\": \"676.574.657-64\",\r\n        \"dataNascimento\": \"1994-01-02\",\r\n        \"telefone\": \"(32) 73543-0000\",\r\n        \"idade\": 31\r\n    }",
+							"raw": "{\r\n  \t\"nome\": \"Harry Rodrigues Canedo\",\r\n    \"cpf\": \"001.855.657-25\",\r\n    \"dataNascimento\": \"1990-01-02\",\r\n    \"telefone\": \"(32) 73543-1234\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -74,7 +75,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/pacientes/editar/16",
+							"raw": "http://localhost:8080/api/pacientes/editar/38",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -84,7 +85,7 @@
 								"api",
 								"pacientes",
 								"editar",
-								"16"
+								"38"
 							]
 						}
 					},
@@ -96,7 +97,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/pacientes/excluir/20",
+							"raw": "http://localhost:8080/api/pacientes/excluir/38",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -106,7 +107,7 @@
 								"api",
 								"pacientes",
 								"excluir",
-								"20"
+								"38"
 							]
 						}
 					},
@@ -146,7 +147,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"dataHora\": \"teste 2\",\r\n    \"cpf\": \"001.855.657-64\",\r\n    \"dataNascimento\": \"1994-01-02\",\r\n    \"telefone\": \"(32) 73543-0000\"\r\n}",
+							"raw": "{\r\n    \"dataHora\": \"2025-03-31T20:10:00\",\r\n    \"status\": \"Agendada\",\r\n    \"paciente\": \"Harry Rodrigues Canedo\",\r\n    \"profissional\":\"Wallace Borges\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -175,7 +176,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/consultas",
+							"raw": "http://localhost:8080/api/consultas/cancelar",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -183,7 +184,8 @@
 							"port": "8080",
 							"path": [
 								"api",
-								"consultas"
+								"consultas",
+								"cancelar"
 							]
 						}
 					},
@@ -194,6 +196,15 @@
 					"request": {
 						"method": "PUT",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"dataHora\": \"2025-03-27T20:10:00\",\r\n    \"status\": \"Realizada\",\r\n    \"paciente\": \"Harry Rodrigues Canedo\",\r\n    \"profissional\":\"Wallace Borges\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:8080/api/consultas/editar/18",
 							"protocol": "http",
@@ -217,7 +228,7 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/consultas/cancelar/19",
+							"raw": "http://localhost:8080/api/consultas/cancelar/38",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -227,7 +238,7 @@
 								"api",
 								"consultas",
 								"cancelar",
-								"19"
+								"38"
 							]
 						}
 					},
@@ -245,7 +256,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "    {\r\n        \"nome\": \"teste2\",\r\n        \"registroProf\": \"fsdfshjgjhgjdfs\",\r\n        \"cargo\": \"fdsfdsfsjhghjhhgjdf\"\r\n    }",
+							"raw": "{\r\n    \"nome\": \"José Luiz da Silva\",\r\n    \"registroProf\": \"CRM-123456\",\r\n    \"cargo\": \"Enfermeiro\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -295,7 +306,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "     {\r\n        \"nome\": \"teste\",\r\n        \"registroProf\": \"fsdfgsfgsfdgfsdgfdsgsdfs\",\r\n        \"cargo\": \"fdsfdsfsdf\"\r\n    }",
+							"raw": "{\r\n    \"nome\": \"José Luiz da Silva\",\r\n    \"registroProf\": \"CRM-123456\",\r\n    \"cargo\": \"Técnico em Análises Clínicas\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -303,7 +314,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/profissionais/editar/9",
+							"raw": "http://localhost:8080/api/profissionais/editar/11",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -313,7 +324,7 @@
 								"api",
 								"profissionais",
 								"editar",
-								"9"
+								"11"
 							]
 						}
 					},
@@ -353,7 +364,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"nome\": \"Ortopedista\",\r\n    \"descricao\": \"Atua como médico dos ossos.\",\r\n    \"profissionais\": []\r\n}",
+							"raw": "{\r\n    \"nome\": \"Farmacêutico(a)\",\r\n    \"descricao\": \"Dispensa medicamentos e orienta sobre seu uso correto e seguro.\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -409,7 +420,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"nome\": \"Pediatra/Infantil\",\r\n    \"descricao\": \"Atua na área Infantil.\",\r\n    \"profissionais\": []\r\n}",
+							"raw": "{\r\n    \"nome\": \"Farmacêutico(a)\",\r\n    \"descricao\": \"Dispensa medicamentos e orienta sobre seu uso correto,seguro e eficaz.\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -417,7 +428,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/especialidades/editar/12",
+							"raw": "http://localhost:8080/api/especialidades/editar/22",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -427,7 +438,7 @@
 								"api",
 								"especialidades",
 								"editar",
-								"12"
+								"22"
 							]
 						}
 					},
@@ -439,7 +450,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/especialidades/excluir/8",
+							"raw": "http://localhost:8080/api/especialidades/excluir/22",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -449,7 +460,7 @@
 								"api",
 								"especialidades",
 								"excluir",
-								"8"
+								"22"
 							]
 						}
 					},
@@ -467,7 +478,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"paciente\": {\r\n        \"id\": 16\r\n    },\r\n    \"profissional\": {\r\n        \"id\": 6\r\n    },\r\n    \"leito\": {\r\n        \"id\": 2\r\n    },\r\n    \"dataEntrada\": \"2025-03-15T22:21:00\",\r\n    \"dataSaida\": \"2025-03-26T22:23:00\"\r\n}",
+							"raw": "{\r\n    \"paciente\": \"Harry Rodrigues Canedo\",\r\n    \"profissional\": \"Wallace Borges\",\r\n    \"leito\": \"3\",\r\n    \"dataEntrada\": \"2025-04-03T19:00:00\",\r\n    \"dataSaida\": \"2025-04-05T19:00:00\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -516,7 +527,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/internacoes/excluir/15",
+							"raw": "http://localhost:8080/api/internacoes/excluir/19",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -526,7 +537,7 @@
 								"api",
 								"internacoes",
 								"excluir",
-								"15"
+								"19"
 							]
 						}
 					},
@@ -544,7 +555,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"numero\": \"11\",\r\n    \"status\": \"MANUTENCAO\"\r\n}",
+							"raw": "{\r\n    \"numero\": \"12\",\r\n    \"status\": \"DISPONIVEL\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -594,7 +605,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"numero\": \"1\",\r\n    \"status\": \"DISPONIVEL\"\r\n}",
+							"raw": "{\r\n    \"numero\": \"12\",\r\n    \"status\": \"OCUPADO\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -602,7 +613,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/leitos/editar/1",
+							"raw": "http://localhost:8080/api/leitos/editar/12",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -612,7 +623,7 @@
 								"api",
 								"leitos",
 								"editar",
-								"1"
+								"12"
 							]
 						}
 					},
@@ -630,7 +641,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"consulta\": 20,\r\n    \"urlSala\": \"www.google.com\",\r\n    \"status\": \"AGENDADA\"\r\n}",
+							"raw": "{\r\n    \"consulta\": 20,\r\n    \"urlSala\": \"www.sghss.com.br/sala30\",\r\n    \"status\": \"AGENDADA\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -710,7 +721,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/videochamadas/excluir/26",
+							"raw": "http://localhost:8080/api/videochamadas/excluir/33",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -720,7 +731,7 @@
 								"api",
 								"videochamadas",
 								"excluir",
-								"26"
+								"33"
 							]
 						}
 					},
@@ -738,7 +749,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"titulo\": \"dsfg\",\r\n    \"descricao\": \"fdfd\",\r\n    \"entrada\": 400.00,\r\n    \"despesa\": 1.00\r\n}",
+							"raw": "{\r\n    \"titulo\": \"Entrada\",\r\n    \"descricao\": \"Valor Mensal.\",\r\n    \"entrada\": 600.00,\r\n    \"despesa\": 0.00\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -787,7 +798,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/relatoriosFinanceiros/excluir/21",
+							"raw": "http://localhost:8080/api/relatoriosFinanceiros/excluir/25",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -797,7 +808,7 @@
 								"api",
 								"relatoriosFinanceiros",
 								"excluir",
-								"21"
+								"25"
 							]
 						}
 					},
@@ -815,7 +826,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"produto\": \"novo\",\r\n    \"quantidade\": 3\r\n}",
+							"raw": "{\r\n    \"produto\": \"Estetoscópio\",\r\n    \"quantidade\": 30\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -873,7 +884,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/estoque/excluir/14",
+							"raw": "http://localhost:8080/api/estoque/excluir/18",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -883,7 +894,7 @@
 								"api",
 								"estoque",
 								"excluir",
-								"14"
+								"18"
 							]
 						}
 					},
@@ -936,7 +947,7 @@
 					"basic": [
 						{
 							"key": "password",
-							"value": "12345678",
+							"value": "{{vault:authorization-password}}",
 							"type": "string"
 						},
 						{
