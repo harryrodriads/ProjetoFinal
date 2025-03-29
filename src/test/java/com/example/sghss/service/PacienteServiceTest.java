@@ -58,7 +58,7 @@ public class PacienteServiceTest {
     }
     
     @Test
-    public void CT006_naoDeveCadastrarPacienteSemCpf() {
+    public void CT002_naoDeveCadastrarPacienteSemCpf() {
         Paciente paciente = new Paciente();
         paciente.setNome("Harry Rodrigues Canedo");
         paciente.setCpf(null); 
